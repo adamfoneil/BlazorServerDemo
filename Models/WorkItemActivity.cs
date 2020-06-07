@@ -25,8 +25,8 @@ namespace Models
         /// <summary>
         /// Flag values:
         /// 0 = none (no issues, I should be able to do this),
-        /// 1 = technical (requirements make sense, but I'm not sure how to do this),
-        /// 2 = conceptual (I have a problem with the requirements)
+        /// 1 = technical (I'm not sure how to do this),
+        /// 2 = conceptual (requirements are problematic)
         /// </summary>
         public int Impediments { get; set; }
 
