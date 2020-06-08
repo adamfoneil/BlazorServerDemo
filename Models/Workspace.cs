@@ -1,5 +1,5 @@
-﻿using Models.Conventions;
-using System;
+﻿using AO.Models;
+using Models.Conventions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models
@@ -12,14 +12,7 @@ namespace Models
 
         public int NextWorkItemNumber { get; set; } = 1000;
 
-        /// <summary>
-        /// number of days in a sprint
-        /// </summary>
-        public int IterationDays { get; set; } = 14;
-
-        /// <summary>
-        /// when do iterations end?
-        /// </summary>
-        public DayOfWeek IterationEndDay { get; set; } = DayOfWeek.Sunday;
+        [References(typeof(IterationSetup))]
+        public int? IterationSetupId { get; set; }
     }
 }

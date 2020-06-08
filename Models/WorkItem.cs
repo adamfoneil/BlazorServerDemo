@@ -13,6 +13,9 @@ namespace Models
         [Key]
         public int Number { get; set; }
 
+        [References(typeof(Folder))]
+        public int FolderId { get; set; }
+
         [MaxLength(255)]
         public string Title { get; set; }
 
@@ -26,5 +29,7 @@ namespace Models
         /// </summary>
         [References(typeof(Activity))]
         public int? ActivityId { get; set; }
+
+        public bool IsClosed { get; set; }
     }
 }
