@@ -20,8 +20,5 @@ namespace Models
         [Key]
         [MaxLength(50)]
         public string Name { get; set; }
-
-        [References(typeof(Activity))]
-        public int? NextActivityId { get; set; }
     }
 }
