@@ -30,6 +30,9 @@ namespace Models
         [References(typeof(Activity))]
         public int? ActivityId { get; set; }
 
+        [References(typeof(WorkItem))]
+        public int? ParentId { get; set; }
+
         public bool IsClosed { get; set; }
     }
 }

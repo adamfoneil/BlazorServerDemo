@@ -1,4 +1,5 @@
-﻿using Models.Conventions;
+﻿using AO.Models;
+using Models.Conventions;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,10 @@ namespace Models
 {
     public class IterationSetup : BaseTable
     {
+        [Key]
+        [References(typeof(Workspace))]
+        public int WorkspaceId { get; set; }
+
         [Key]
         [MaxLength(50)]
         public string Name { get; set; }
