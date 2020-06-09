@@ -17,6 +17,7 @@ namespace Models
         public int FolderId { get; set; }
 
         [MaxLength(255)]
+        [Required]
         public string Title { get; set; }
 
         /// <summary>
@@ -33,6 +34,7 @@ namespace Models
         [References(typeof(WorkItem))]
         public int? ParentId { get; set; }
 
-        public bool IsClosed { get; set; }
+        [References(typeof(CloseReason))]
+        public int? CloseReasonId { get; set; }
     }
 }
