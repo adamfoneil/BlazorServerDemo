@@ -20,8 +20,14 @@ namespace Models
 
         public string Name => UserName;
 
+        [MaxLength(50)]
+        public string DisplayName { get; set; }
+
         [MaxLength(100)]
         public string TimeZoneId { get; set; }
+
+        [References(typeof(Workspace))]
+        public int? WorkspaceId { get; set; }
 
         public DateTime LocalTime => CurrentTime.GetLocal(TimeZoneId);
     }

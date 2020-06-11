@@ -1,16 +1,7 @@
 ﻿@page "/"
-@inject TimeZoneListing TimeZones;
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
-
-
-<select name="TimeZoneId" class="form-control">
-    @foreach (var item in TimeZones.GetTimeZoneItems())
-    {
-        <option value="@item.Value">@item.Text</option>
-    }
-</select>

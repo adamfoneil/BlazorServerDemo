@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorServerDemo", "BlazorS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models", "Models\Models.csproj", "{289257BD-F586-4EDC-8295-0194D33F9368}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{BE87C0CA-4688-489D-861E-C1F3FA987833}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{BE87C0CA-4688-489D-861E-C1F3FA987833}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,27 @@
+﻿@page "/profile"
+@inject TimeZoneListing TimeZones
+@inject Data Data
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<EditForm Model="@CurrentUser">
+    <InputText @bind-Value="CurrentUser.DisplayName"/>
+
+    <InputSelect @bind-Value="CurrentUser.TimeZoneId">
+        @foreach (var item in TimeZones.GetTimeZoneItems())
+        {
+            <option value="@item.Value">@item.Text</option>
+        }
+    </InputSelect>
+</EditForm>
+
+@code {
+    UserProfile CurrentUser { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        CurrentUser = await Data.GetUserProfile(authState.User);
+    }
+}
