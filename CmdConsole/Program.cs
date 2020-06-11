@@ -13,6 +13,7 @@ namespace CmdConsole
             {
                 dt.AddAllTablesAsync(cn, (objectName) =>
                 {
+                    // this is just so I can see this making progress -- this was taking a long time for some reason when I was doing this initially
                     Console.WriteLine(objectName.Name);
                     return true;
                 }).Wait();
