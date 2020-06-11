@@ -1,6 +1,6 @@
 ﻿using Dapper.CX.SqlServer.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Models;
-using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace BlazorServerDemo.Services
@@ -11,9 +11,10 @@ namespace BlazorServerDemo.Services
         {
         }
 
-        public async Task<UserProfile> GetUserProfile(IPrincipal user)
+        public async Task<UserProfile> GetUserProfile(AuthenticationStateProvider authenticationStateProvider)
         {
-            return await GetWhereAsync<UserProfile>(new { userName = user.Identity.Name });
+            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+            return await GetWhereAsync<UserProfile>(new { userName = authState.User.Identity.Name });
         }
     }
 }
