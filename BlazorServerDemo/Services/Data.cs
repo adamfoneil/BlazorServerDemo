@@ -1,6 +1,8 @@
-﻿using Dapper.CX.SqlServer.Services;
+﻿using BlazorServerDemo.Queries;
+using Dapper.CX.SqlServer.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BlazorServerDemo.Services
@@ -29,6 +31,16 @@ namespace BlazorServerDemo.Services
                 nameof(UserProfile.DisplayName),
                 nameof(UserProfile.TimeZoneId)
             });
+        }
+
+        public async Task<IEnumerable<Workspace>> GetMyWorkspaces(AuthenticationStateProvider authenticationStateProvider)
+        {
+            var profile = await GetUserProfile(authenticationStateProvider);
+
+            using (var cn = GetConnection())
+            {
+                return await new MyWorkspaces() { UserId = profile.UserId }.ExecuteAsync(cn);
+            }            
         }
     }
 }

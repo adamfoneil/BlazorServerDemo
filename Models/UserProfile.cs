@@ -30,6 +30,8 @@ namespace Models
         public int? WorkspaceId { get; set; }
 
         public DateTime LocalTime => CurrentTime.GetLocal(TimeZoneId);
+
+        public Workspace Workspace { get; set; }
     }
 
     public static class CurrentTime

@@ -1,12 +1,13 @@
 ﻿using AO.Models;
 using AO.Models.Enums;
+using AO.Models.Interfaces;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models.Conventions
 {
     [Identity(nameof(Id))]
-    public abstract class BaseTable
+    public abstract class BaseTable : IAudit
     {
         public int Id { get; set; }
 
@@ -24,5 +25,21 @@ namespace Models.Conventions
 
         [SaveAction(SaveAction.Update)]
         public DateTime? DateModified { get; set; }
+
+        public void Stamp(SaveAction saveAction, IUserBase user)
+        {
+            switch (saveAction)
+            {
+                case SaveAction.Insert:
+                    CreatedBy = user.Name;
+                    DateCreated = user.LocalTime;
+                    break;
+
+                case SaveAction.Update:
+                    ModifiedBy = user.Name;
+                    DateModified = user.LocalTime;
+                    break;
+            }
+        }
     }
 }
