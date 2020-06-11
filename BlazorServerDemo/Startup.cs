@@ -16,6 +16,8 @@ using Microsoft.Extensions.Hosting;
 using BlazorServerDemo.Areas.Identity;
 using BlazorServerDemo.Data;
 using BlazorServerDemo.Services;
+using SqlServer.LocalDb;
+using System.Reflection;
 
 namespace BlazorServerDemo
 {
@@ -32,6 +34,9 @@ namespace BlazorServerDemo
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            //uncomment the next line if this is your first time running project
+            //LocalDb.CreateFromResourceAsync(Assembly.GetExecutingAssembly(), "BlazorServerDemo.Resources.BlazorServerDemo.zip", "BlazorServerDemo").Wait();
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("Default")));
