@@ -12,6 +12,9 @@ namespace Models
 
         public int NextWorkItemNumber { get; set; } = 1000;
 
+        [References(typeof(UserProfile))]
+        public int? OwnerUserId { get; set; }
+
         [References(typeof(IterationSetup))]
         public int? IterationSetupId { get; set; }
     }

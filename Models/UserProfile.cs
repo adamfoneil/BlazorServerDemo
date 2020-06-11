@@ -20,10 +20,25 @@ namespace Models
 
         public string Name => UserName;
 
-        public int TimeZoneOffset { get; set; }
+        [MaxLength(100)]
+        public string TimeZoneId { get; set; }
 
-        public DateTime LocalTime => (TimeZoneOffset < 24) ?
-            DateTime.UtcNow.AddHours(TimeZoneOffset) :
-            DateTime.UtcNow.AddMinutes(TimeZoneOffset);
+        public DateTime LocalTime => CurrentTime.GetLocal(TimeZoneId);
+    }
+
+    public static class CurrentTime
+    {
+        public static DateTime GetLocal(string timeZoneId)
+        {
+            try
+            {
+                var tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+                return TimeZoneInfo.ConvertTime(DateTime.UtcNow, tz);
+            }
+            catch
+            {
+                return DateTime.UtcNow;
+            }
+        }
     }
 }

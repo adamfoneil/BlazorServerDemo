@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using BlazorServerDemo.Areas.Identity;
 using BlazorServerDemo.Data;
+using BlazorServerDemo.Services;
 
 namespace BlazorServerDemo
 {
@@ -40,6 +41,7 @@ namespace BlazorServerDemo
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<TimeZoneListing>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
