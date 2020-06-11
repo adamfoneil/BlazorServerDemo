@@ -7,9 +7,9 @@ namespace Models
 {
     /// <summary>
     /// provides a place to for business to rank value of work items,
-    /// and provide business case
+    /// and provide business case/requirements
     /// </summary>
-    public class WorkItemPriority : BaseTable, IBody
+    public class WorkItemRequirements : BaseTable, IBody
     {
         [Key]
         [References(typeof(WorkItem))]
