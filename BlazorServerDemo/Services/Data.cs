@@ -1,6 +1,7 @@
 ﻿using BlazorServerDemo.Queries;
 using Dapper.CX.SqlServer.Services;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.SqlServer.Management.Smo;
 using Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,11 +26,13 @@ namespace BlazorServerDemo.Services
 
             updateProfile.DisplayName = userProfile.DisplayName;
             updateProfile.TimeZoneId = userProfile.TimeZoneId;
+            updateProfile.WorkspaceId = userProfile.WorkspaceId;
 
             await SaveAsync(updateProfile, new string[]
             {
                 nameof(UserProfile.DisplayName),
-                nameof(UserProfile.TimeZoneId)
+                nameof(UserProfile.TimeZoneId),
+                nameof(UserProfile.WorkspaceId)
             });
         }
 

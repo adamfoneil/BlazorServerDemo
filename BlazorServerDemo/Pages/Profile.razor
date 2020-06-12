@@ -29,13 +29,13 @@
 
         <div class="form-group">
             <label>Current Workspace:</label>
-            <InputSelect @bind-Value="CurrentUser.WorkspaceId" class="form-control">
+            <InputSelectNumber @bind-Value="CurrentUser.WorkspaceId" class="form-control">
                 <option value="">(none)</option>
                 @foreach (var item in MyWorkspaces)
                 {
                     <option value="@item.Id">@item.Name</option>
                 }
-            </InputSelect>
+            </InputSelectNumber>
         </div>
 
         <button class="btn btn-primary">Save</button>
