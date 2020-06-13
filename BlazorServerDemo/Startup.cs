@@ -47,7 +47,7 @@ namespace BlazorServerDemo
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddSingleton<WeatherForecastService>();
             services.AddSingleton<TimeZoneListing>();
-            services.AddScoped((sp) => new Services.Data(Configuration.GetConnectionString("Default")));
+            services.AddScoped((sp) => new Services.Data(Configuration.GetConnectionString("Default"), sp.GetService<AuthenticationStateProvider>()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

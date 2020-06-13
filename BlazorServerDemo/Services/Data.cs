@@ -10,21 +10,22 @@ namespace BlazorServerDemo.Services
 {
     public class Data : SqlServerIntCrudService
     {
-        private int _workspaceId;
+        private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-        public Data(string connectionString) : base(connectionString)
+        public Data(string connectionString, AuthenticationStateProvider authenticationStateProvider) : base(connectionString)
         {
-        }        
+            _authenticationStateProvider = authenticationStateProvider;
+        }
 
-        public async Task<UserProfile> GetUserProfile(AuthenticationStateProvider authenticationStateProvider)
+        public async Task<UserProfile> GetUserProfile()
         {
-            var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+            var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             return await GetWhereAsync<UserProfile>(new { userName = authState.User.Identity.Name });
         }
 
-        public async Task UpdateUserProfile(AuthenticationStateProvider authenticationStateProvider, UserProfile userProfile)
+        public async Task UpdateUserProfile(UserProfile userProfile)
         {
-            var updateProfile = await GetUserProfile(authenticationStateProvider);
+            var updateProfile = await GetUserProfile();
 
             updateProfile.DisplayName = userProfile.DisplayName;
             updateProfile.TimeZoneId = userProfile.TimeZoneId;
@@ -38,9 +39,9 @@ namespace BlazorServerDemo.Services
             });
         }
 
-        public async Task<IEnumerable<Workspace>> GetMyWorkspaces(AuthenticationStateProvider authenticationStateProvider)
+        public async Task<IEnumerable<Workspace>> GetMyWorkspaces()
         {
-            var profile = await GetUserProfile(authenticationStateProvider);
+            var profile = await GetUserProfile();
 
             using (var cn = GetConnection())
             {
