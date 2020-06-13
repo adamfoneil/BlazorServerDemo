@@ -1,35 +1,39 @@
 ﻿@inherits LayoutComponentBase
+@layout MainLayout
 
-<div class="col-2">
-   <ul class="nav">
-       <li class="nav-item">
-           <NavLink class="nav-link" href="users" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Users
-            </NavLink>
-       </li>
-       <li class="nav-item">
-           <NavLink class="nav-link" href="folders">
-                <span class="oi oi-home" aria-hidden="true"></span> Folders
-            </NavLink>
-       </li>
-       <li class="nav-item">
-           <NavLink class="nav-link" href="labels">
-                <span class="oi oi-home" aria-hidden="true"></span> Labels
-            </NavLink>
-       </li>
-       <li class="nav-item">
-           <NavLink class="nav-link" href="activities">
-                <span class="oi oi-home" aria-hidden="true"></span> Activities
-            </NavLink>
-       </li>
-       <li class="nav-item">
-           <NavLink class="nav-link" href="iterations">
-                <span class="oi oi-home" aria-hidden="true"></span> Iterations
-            </NavLink>
-       </li>
-   </ul>
-</div>
+<div class="row">
+    <div class="col-2">
+       <ul class="nav">
+           <li class="nav-item">
+               <NavLink class="nav-link" href="/setup/users" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Users
+                </NavLink>
+           </li>
+           <li class="nav-item">
+               <NavLink class="nav-link" href="/setup/folders">
+                    <span class="oi oi-home" aria-hidden="true"></span> Folders
+                </NavLink>
+           </li>
+           <li class="nav-item">
+               <NavLink class="nav-link" href="/setup/labels">
+                    <span class="oi oi-home" aria-hidden="true"></span> Labels
+                </NavLink>
+           </li>
+           <li class="nav-item">
+               <NavLink class="nav-link" href="/setup/activities">
+                    <span class="oi oi-home" aria-hidden="true"></span> Activities
+                </NavLink>
+           </li>
+           <li class="nav-item">
+               <NavLink class="nav-link" href="/setup/iterations">
+                    <span class="oi oi-home" aria-hidden="true"></span> Iterations
+                </NavLink>
+           </li>
+       </ul>
+    </div>
 
-<div class="col-10">
-    @Body
+    <div class="col-10">
+        @Body
+    </div>
+
 </div>
