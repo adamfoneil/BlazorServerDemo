@@ -61,13 +61,13 @@
     {
         await base.OnInitializedAsync();
 
-        CurrentUser = await Data.GetUserProfile();
-        MyWorkspaces = await Data.GetMyWorkspaces();
+        CurrentUser = await Data.GetUserProfileAsync();
+        MyWorkspaces = await Data.GetMyWorkspacesAsync();
     }
 
     async Task SubmitForm()
     {
-        await Data.UpdateUserProfile(CurrentUser);
+        await Data.UpdateUserProfileAsync(CurrentUser);
     }
 
     async Task CreateWorkspaceSubmit()

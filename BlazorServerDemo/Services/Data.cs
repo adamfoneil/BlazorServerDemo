@@ -17,15 +17,22 @@ namespace BlazorServerDemo.Services
             _authenticationStateProvider = authenticationStateProvider;
         }
 
-        public async Task<UserProfile> GetUserProfile()
+        private UserProfile _userProfile;
+        public async Task<int> GetWorkspaceIdAsync()
+        {
+            if (_userProfile is null) _userProfile = await GetUserProfileAsync();
+            return _userProfile.WorkspaceId ?? 0;
+        }
+
+        public async Task<UserProfile> GetUserProfileAsync()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
             return await GetWhereAsync<UserProfile>(new { userName = authState.User.Identity.Name });
         }
 
-        public async Task UpdateUserProfile(UserProfile userProfile)
+        public async Task UpdateUserProfileAsync(UserProfile userProfile)
         {
-            var updateProfile = await GetUserProfile();
+            var updateProfile = await GetUserProfileAsync();
 
             updateProfile.DisplayName = userProfile.DisplayName;
             updateProfile.TimeZoneId = userProfile.TimeZoneId;
@@ -39,14 +46,20 @@ namespace BlazorServerDemo.Services
             });
         }
 
-        public async Task<IEnumerable<Workspace>> GetMyWorkspaces()
+        public async Task<IEnumerable<Workspace>> GetMyWorkspacesAsync()
         {
-            var profile = await GetUserProfile();
+            var profile = await GetUserProfileAsync();
 
             using (var cn = GetConnection())
             {
                 return await new MyWorkspaces() { UserId = profile.UserId }.ExecuteAsync(cn);
             }            
+        }
+
+        public async Task<int> SaveAsync<TModel>(TModel @model)
+        {
+            if (_userProfile is null) _userProfile = await GetUserProfileAsync();
+            return await SaveAsync(@model, user: _userProfile);
         }
     }
 }
