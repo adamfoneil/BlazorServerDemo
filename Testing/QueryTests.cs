@@ -27,5 +27,11 @@ namespace Testing
         {
             QueryHelper.Test<MyLabels>(GetConnection);
         }
+
+        [TestMethod]
+        public void MyWorkspacesQuery()
+        {
+            QueryHelper.Test<MyWorkspaces>(GetConnection);
+        }
     }
 }
