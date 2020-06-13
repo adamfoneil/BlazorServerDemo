@@ -1,5 +1,6 @@
 ﻿using BlazorServerDemo.Queries;
 using Dapper.CX.SqlServer.Services;
+using Dapper.QX;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.SqlServer.Management.Smo;
 using Models;
@@ -60,6 +61,14 @@ namespace BlazorServerDemo.Services
         {
             if (_userProfile is null) _userProfile = await GetUserProfileAsync();
             return await SaveAsync(@model, user: _userProfile);
+        }
+
+        public async Task<IEnumerable<T>> QueryAsync<T>(Query<T> query)
+        {
+            using (var cn = GetConnection())
+            {
+                return await query.ExecuteAsync(cn);
+            }
         }
     }
 }

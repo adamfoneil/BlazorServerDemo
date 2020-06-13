@@ -65,7 +65,7 @@
 
         using (var cn = Data.GetConnection())
         {
-            CreateLabel = new Label() { WorkspaceId = await Data.GetWorkspaceIdAsync() };            
+            CreateLabel = new Label() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
         }
 
         await RefreshListAsync();
@@ -79,13 +79,10 @@
 
     async Task RefreshListAsync()
     {
-        using (var cn = Data.GetConnection())
+        AllLabels = await Data.QueryAsync(new MyLabels()
         {
-            AllLabels = await new MyLabels()
-            {
-                WorkspaceId = await Data.GetWorkspaceIdAsync(),
-                IsActive = IsActive ?? true
-            }.ExecuteAsync(cn);
-        }
+            WorkspaceId = await Data.GetWorkspaceIdAsync(),
+            IsActive = IsActive ?? true
+        });
     }
 }
