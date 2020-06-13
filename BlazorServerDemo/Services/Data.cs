@@ -10,9 +10,11 @@ namespace BlazorServerDemo.Services
 {
     public class Data : SqlServerIntCrudService
     {
+        private int _workspaceId;
+
         public Data(string connectionString) : base(connectionString)
         {
-        }
+        }        
 
         public async Task<UserProfile> GetUserProfile(AuthenticationStateProvider authenticationStateProvider)
         {

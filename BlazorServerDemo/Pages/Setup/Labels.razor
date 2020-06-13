@@ -1,8 +1,24 @@
 ﻿@page "/setup/labels"
+@inject Data Data 
 
 <h3>Labels</h3>
 <p>Use labels to categorize work items, for example as <strong>bugs</strong> or <strong>enhancements</strong>.</p>
 
-@code {
 
+<ul>
+    @foreach (var item in AllLabels)
+    {
+
+    }
+</ul>
+
+@code {
+    protected IEnumerable<Label> AllLabels { get; set; } = Enumerable.Empty<Label>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        //AllLabels = await Data.
+    }
 }

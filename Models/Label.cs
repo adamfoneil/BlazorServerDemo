@@ -21,5 +21,7 @@ namespace Models
         [MaxLength(50)]
         [Required]
         public string TextColor { get; set; }
+
+        public bool IsActive { get; set; } = true;
     }
 }
