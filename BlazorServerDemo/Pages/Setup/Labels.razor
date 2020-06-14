@@ -4,6 +4,8 @@
 <h3>Labels</h3>
 <p>Use labels to categorize work items, for example as <strong>bugs</strong> or <strong>enhancements</strong>.</p>
 
+<div class="alert alert-danger">@ErrorMessage</div>
+
 <table class="table">
     <tr>
         <th>Label Name</th>
@@ -19,7 +21,7 @@
             <td></td>
             <td></td>
             <td><span class="badge" style="background-color:@item.BackColor;color:@item.TextColor">@item.Name</span></td>
-            <td></td>
+            <td><button @onclick="@(e => DeleteLabel(item.Id))" href="#" class="btn btn-sm">delete</button></td>
         </tr>
     }
 </table>
@@ -52,6 +54,8 @@
 </EditForm>
 
 @code {
+    private string ErrorMessage { get; set; }
+
     [Parameter]
     public bool? IsActive { get; set; }
 
@@ -63,18 +67,23 @@
     {
         await base.OnInitializedAsync();
 
-        using (var cn = Data.GetConnection())
-        {
-            CreateLabel = new Label() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
-        }
+        CreateLabel = new Label() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
 
         await RefreshListAsync();
     }
 
     async Task CreateLabelSubmit()
     {
-        await Data.SaveAsync(CreateLabel);
-        await RefreshListAsync();
+        var result = await Data.TrySaveAsync(CreateLabel);
+        if (result.IsSuccessful)
+        {
+            CreateLabel = new Label() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
+            await RefreshListAsync();
+        }
+        else
+        {
+            ErrorMessage = result.Exception.Message;
+        }
     }
 
     async Task RefreshListAsync()
@@ -84,5 +93,20 @@
             WorkspaceId = await Data.GetWorkspaceIdAsync(),
             IsActive = IsActive ?? true
         });
+    }
+
+    async Task DeleteLabel(int id)
+    {
+        ErrorMessage = null;
+
+        var result = await Data.TryDeleteAsync<Label>(id);
+        if (result.IsSuccessful)
+        {
+            await RefreshListAsync();
+        }
+        else
+        {
+            ErrorMessage = result.Exception.Message;
+        }
     }
 }

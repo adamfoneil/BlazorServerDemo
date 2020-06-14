@@ -63,6 +63,12 @@ namespace BlazorServerDemo.Services
             return await SaveAsync(@model, user: _userProfile);
         }
 
+        public async Task<Result> TrySaveAsync<TModel>(TModel @model)
+        {
+            if (_userProfile is null) _userProfile = await GetUserProfileAsync();
+            return await TrySaveAsync(model, user: _userProfile);
+        }
+
         public async Task<IEnumerable<T>> QueryAsync<T>(Query<T> query)
         {
             using (var cn = GetConnection())
