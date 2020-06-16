@@ -103,7 +103,9 @@
 
     async Task OnRowUpdate(Label label) => await Data.SaveAsync(label, (exc) => error.Message = exc.Message);
 
-    async Task DeleteRow(Label label) => await Data.DeleteAsync<Label>(label, label.Id, (exc) => error.Message = exc.Message, (label) => AllLabels.Remove(label));
+    async Task DeleteRow(Label label) => await Data.DeleteAsync<Label>(label, label.Id, 
+        (exc) => error.Message = exc.Message, 
+        (label) => AllLabels.Remove(label));
 
     protected override async Task OnInitializedAsync()
     {
