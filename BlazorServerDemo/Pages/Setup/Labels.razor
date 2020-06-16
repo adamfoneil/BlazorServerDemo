@@ -94,12 +94,9 @@
 
 @code {
     RadzenGrid<Label> LabelGrid;
-
     ErrorMessage error;
     FilterActive activeFilter;
-
     Label CreateLabel = new Label();
-
     List<Label> AllLabels { get; set; } = new List<Label>();
 
     async Task OnFilterChanged() => await RefreshListAsync();
@@ -115,19 +112,13 @@
         await RefreshListAsync();
     }
 
-    async Task CreateLabelSubmit()
-    {
-        var result = await Data.TrySaveAsync(CreateLabel);
-        if (result.IsSuccessful)
-        {
-            CreateLabel = new Label() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
-            await RefreshListAsync();
-        }
-        else
-        {
-            error.Message = result.Exception.Message;
-        }
-    }
+    async Task CreateLabelSubmit() => await Data.SaveAsync(CreateLabel, 
+        (exc) => error.Message = exc.Message, 
+        async () => 
+        { 
+            CreateLabel = new Label() { WorkspaceId = await Data.GetWorkspaceIdAsync() }; 
+            await RefreshListAsync(); 
+        });    
 
     async Task RefreshListAsync()
     {

@@ -70,15 +70,14 @@
     Activity CreateActivity = new Activity();
     ErrorMessage error;
     FilterActive activeFilter;
-
     List<Activity> AllActivities = new List<Activity>();
 
     async Task OnFilterChanged() => await RefreshListAsync();
 
     async Task OnRowUpdate(Activity activity) => await Data.SaveAsync(activity, (exc) => error.Message = exc.Message);
 
-    async Task DeleteRow(Activity activity) => await Data.DeleteAsync<Activity>(activity, 
-        activity.Id, (exc) => error.Message = exc.Message, 
+    async Task DeleteRow(Activity activity) => await Data.DeleteAsync<Activity>(activity,
+        activity.Id, (exc) => error.Message = exc.Message,
         (activity) => AllActivities.Remove(activity));
 
     protected override async Task OnInitializedAsync()
@@ -88,19 +87,13 @@
         await RefreshListAsync();
     }
 
-    async Task OnCreateActivity()
-    {
-        var result = await Data.TrySaveAsync(CreateActivity);
-        if (result.IsSuccessful)
-        {
-            CreateActivity = new Activity() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
-            await RefreshListAsync();
-        }
-        else
-        {
-            error.Message = result.Exception.Message;
-        }
-    }
+    async Task OnCreateActivity() => await Data.SaveAsync<Activity>(CreateActivity, 
+        (exc) => error.Message = exc.Message, 
+        async () => 
+        { 
+            CreateActivity = new Activity() { WorkspaceId = await Data.GetWorkspaceIdAsync() }; 
+            await RefreshListAsync(); 
+        });    
 
     async Task RefreshListAsync()
     {
