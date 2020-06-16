@@ -34,10 +34,15 @@
                 <RadzenTextBox @bind-Value="label.TextColor" class="form-control"/>
             </EditTemplate>
         </RadzenGridColumn>
-        <RadzenGridColumn Property="IsActive" Title="Active" TItem="Label">
+        <RadzenGridColumn Property="IsActive" TItem="Label">
             <EditTemplate Context="label">
                 <RadzenCheckBox @bind-Value="label.IsActive"/>
             </EditTemplate>            
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Label">
+            <Template Context="label">
+                <span class="badge" style="background-color:@label.BackColor;color:@label.TextColor">@label.Name</span>
+            </Template>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Label">
             <Template Context="label">
@@ -89,7 +94,7 @@
 
     Label CreateLabel = new Label();
 
-    IEnumerable<Label> AllLabels { get; set; } = Enumerable.Empty<Label>();
+    List<Label> AllLabels { get; set; } = Enumerable.Empty<Label>().ToList();
 
     protected override async Task OnInitializedAsync()
     {
@@ -122,11 +127,11 @@
 
     async Task RefreshListAsync()
     {
-        AllLabels = await Data.QueryAsync(new MyLabels()
+        AllLabels = (await Data.QueryAsync(new MyLabels()
         {
             WorkspaceId = await Data.GetWorkspaceIdAsync(),
             IsActive = IsActive ?? true
-        });
+        })).ToList();
     }
 
     void EditRow(Label label) => LabelGrid.EditRow(label);
@@ -135,8 +140,16 @@
 
     async Task DeleteRow(Label label)
     {
-        await Data.DeleteAsync<Label>(label.Id);
-        LabelGrid.Reload();
+        var result = await Data.TryDeleteAsync<Label>(label.Id);
+        if (result.IsSuccessful)
+        {
+            AllLabels.Remove(label);
+            LabelGrid.Reload();
+        }
+        else
+        {
+            ErrorMessage = result.Exception.Message;
+        }
     }
 
     void CancelEdit(Label label) => LabelGrid.CancelEditRow(label);
