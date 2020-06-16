@@ -6,37 +6,54 @@
 
 <ErrorMessage @ref="error"/>
 
-<label>
-    Show items
-    <select name="IsActive" @onchange="(e) => ShowActiveOnChange(e)" class="form-control">
-        <option value="true">Active</option>
-        <option value="false">Inactive</option>
-    </select>    
-</label>
+<div class="pb-3">
+    <label>
+        Show items
+        <select name="IsActive" @onchange="(e) => ShowActiveOnChange(e)" class="form-control">
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+        </select>    
+    </label>
+</div>
 
 <RadzenGrid Data="@AllLabels" TItem="Label" @ref="LabelGrid" RowUpdate="OnRowUpdate">
     <Columns>
         <RadzenGridColumn Property="Name" TItem="Label">
+            <HeaderTemplate>
+                Label Name
+            </HeaderTemplate>
             <EditTemplate Context="label">
                 <RadzenTextBox @bind-Value="label.Name" class="form-control"/>
             </EditTemplate>
         </RadzenGridColumn>
         <RadzenGridColumn Property="BackColor" TItem="Label">
+            <HeaderTemplate>
+                Background Color
+            </HeaderTemplate>
             <EditTemplate Context="label">
                 <RadzenTextBox @bind-Value="label.BackColor" class="form-control"/>
             </EditTemplate>
         </RadzenGridColumn>
         <RadzenGridColumn Property="TextColor" TItem="Label">
+            <HeaderTemplate>
+                Text Color
+            </HeaderTemplate>
             <EditTemplate Context="label">
                 <RadzenTextBox @bind-Value="label.TextColor" class="form-control"/>
             </EditTemplate>
         </RadzenGridColumn>
         <RadzenGridColumn Property="IsActive" TItem="Label">
+            <HeaderTemplate>
+                Active
+            </HeaderTemplate>
             <EditTemplate Context="label">
                 <RadzenCheckBox @bind-Value="label.IsActive"/>
             </EditTemplate>            
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Label">
+            <HeaderTemplate>
+                Preview
+            </HeaderTemplate>
             <Template Context="label">
                 <span class="badge" style="background-color:@label.BackColor;color:@label.TextColor">@label.Name</span>
             </Template>
@@ -54,33 +71,35 @@
     </Columns>
 </RadzenGrid>
 
+<div class="pt-3 pl-3">
+    <EditForm Model="CreateLabel" OnSubmit="CreateLabelSubmit">
+        <div class="row">
+            <div class="form-group">
+                <label>Create Label:</label>
+                <InputText @bind-Value="CreateLabel.Name" class="form-control" required="required"/>
+            </div>
 
-<EditForm Model="CreateLabel" OnSubmit="CreateLabelSubmit">
-    <div class="row">
-        <div class="form-group">
-            <label>Create Label:</label>
-            <InputText @bind-Value="CreateLabel.Name" class="form-control" required="required"/>
+            <div class="form-group">
+                <label>Background Color:</label>
+                <InputText @bind-Value="CreateLabel.BackColor" class="form-control" required="required"/>
+            </div>
+
+            <div class="form-group">
+                <label>Text Color:</label>
+                <InputText @bind-Value="CreateLabel.TextColor" class="form-control" required="required"/>
+            </div>
+
+            <div class="form-group">
+                <label>Preview:</label>
+                <span class="badge" style="background-color:@CreateLabel.BackColor;color:@CreateLabel.TextColor">@CreateLabel.Name</span>
+            </div>        
         </div>
-
-        <div class="form-group">
-            <label>Background Color:</label>
-            <InputText @bind-Value="CreateLabel.BackColor" class="form-control" required="required"/>
+        <div class="row">
+            <button class="btn btn-dark">Create Label</button>
         </div>
+    </EditForm>
+</div>
 
-        <div class="form-group">
-            <label>Text Color:</label>
-            <InputText @bind-Value="CreateLabel.TextColor" class="form-control" required="required"/>
-        </div>
-
-        <div class="form-group">
-            <label>Preview:</label>
-            <span class="badge" style="background-color:@CreateLabel.BackColor;color:@CreateLabel.TextColor">@CreateLabel.Name</span>
-        </div>        
-    </div>
-    <div class="row">
-        <button class="btn btn-dark">Create Label</button>
-    </div>
-</EditForm>
 
 @code {
     RadzenGrid<Label> LabelGrid;
