@@ -4,10 +4,7 @@
 <h3>Labels</h3>
 <p>Use labels to categorize work items, for example as <strong>bugs</strong> or <strong>enhancements</strong>.</p>
 
-@if (!string.IsNullOrEmpty(ErrorMessage))
-{
-    <div class="alert alert-danger">@ErrorMessage</div>
-}
+<ErrorMessage @ref="error"/>
 
 <label>
     Show items
@@ -46,12 +43,12 @@
         </RadzenGridColumn>
         <RadzenGridColumn TItem="Label">
             <Template Context="label">
-                <RadzenButton Icon="edit" Click="@(args => EditRow(label))"/>
-                <RadzenButton Icon="delete" Click="@(args => DeleteRow(label))"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="edit" Click="@(args => EditRow(label))"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="@(args => DeleteRow(label))"/>
             </Template>
             <EditTemplate Context="label">
-                <RadzenButton Icon="save" Click="@((args) => SaveRow(label))"/>
-                <RadzenButton Icon="cancel" Click="@((args) => CancelEdit(label))"/>                    
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" Click="@((args) => SaveRow(label))"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="cancel" Click="@((args) => CancelEdit(label))"/>                    
             </EditTemplate>
         </RadzenGridColumn>
     </Columns>
@@ -87,10 +84,10 @@
 
 @code {
     RadzenGrid<Label> LabelGrid;
-
-    string ErrorMessage;
-
+    
     bool? IsActive;
+
+    ErrorMessage error;
 
     Label CreateLabel = new Label();
 
@@ -115,7 +112,7 @@
         }
         else
         {
-            ErrorMessage = result.Exception.Message;
+            error.Content = result.Exception.Message;
         }
     }
 
@@ -143,8 +140,7 @@
         var result = await Data.TryDeleteAsync<Label>(label.Id);
         if (result.IsSuccessful)
         {
-            AllLabels.Remove(label);
-            LabelGrid.Reload();
+            AllLabels.Remove(label);            
         }
         else
         {
