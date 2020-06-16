@@ -6,15 +6,7 @@
 
 <ErrorMessage @ref="error"/>
 
-<div class="pb-3">
-    <label>
-        Show items
-        <select name="IsActive" @onchange="(e) => ShowActiveOnChange(e)" class="form-control">
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-        </select>    
-    </label>
-</div>
+<FilterActive @ref="activeFilter" FilterChanged="OnFilterChanged"/>
 
 <RadzenGrid Data="@AllLabels" TItem="Label" @ref="LabelGrid" RowUpdate="OnRowUpdate">
     <Columns>
@@ -103,14 +95,15 @@
 
 @code {
     RadzenGrid<Label> LabelGrid;
-    
-    bool? IsActive;
 
     ErrorMessage error;
+    FilterActive activeFilter;
 
     Label CreateLabel = new Label();
 
     List<Label> AllLabels { get; set; } = Enumerable.Empty<Label>().ToList();
+
+    async Task OnFilterChanged() => await RefreshListAsync();
 
     protected override async Task OnInitializedAsync()
     {
@@ -135,18 +128,12 @@
         }
     }
 
-    async Task ShowActiveOnChange(ChangeEventArgs e)
-    {
-        IsActive = bool.Parse(e.Value.ToString());
-        await RefreshListAsync();
-    }
-
     async Task RefreshListAsync()
     {
         AllLabels = (await Data.QueryAsync(new MyLabels()
         {
             WorkspaceId = await Data.GetWorkspaceIdAsync(),
-            IsActive = IsActive ?? true
+            IsActive = activeFilter.Value
         })).ToList();
     }
 
@@ -159,7 +146,7 @@
         var result = await Data.TryDeleteAsync<Label>(label.Id);
         if (result.IsSuccessful)
         {
-            AllLabels.Remove(label);            
+            AllLabels.Remove(label);
         }
         else
         {

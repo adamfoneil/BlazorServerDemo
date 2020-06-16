@@ -1,0 +1,32 @@
+﻿<div class="py-3">
+    <label class="form-inline">
+        <span>@(Label):</span>
+        <select name="@Name" @onchange="(e) => FilterActiveChanged(e)" class="form-control ml-2">
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+        </select>    
+    </label>
+</div>
+
+@code {
+    [Parameter]
+    public string Name { get; set; } = "IsActive";
+
+    [Parameter]
+    public string Label { get; set; } = "Show items";
+
+    [Parameter]
+    public EventCallback FilterChanged { get; set; }
+
+    public bool Value { get; private set; } = true;
+
+    private async Task FilterActiveChanged(ChangeEventArgs args)
+    {
+        bool value = bool.Parse(args.Value.ToString());
+        if (value != Value)
+        {
+            Value = value;
+            await FilterChanged.InvokeAsync(null);
+        }        
+    }
+}
