@@ -28,10 +28,17 @@ namespace BlazorServerDemo.Services
             return _userProfile.WorkspaceId ?? 0;
         }
 
+        public async Task<Workspace> GetWorkspaceAsync()
+        {
+            var wsId = await GetWorkspaceIdAsync();
+            return (wsId != 0) ? await GetAsync<Workspace>(wsId) : default;            
+        }
+        
         public async Task<UserProfile> GetUserProfileAsync()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-            return await GetWhereAsync<UserProfile>(new { userName = authState.User.Identity.Name });
+            var result = await GetWhereAsync<UserProfile>(new { userName = authState.User.Identity.Name });
+            return result;
         }
 
         public async Task UpdateUserProfileAsync(UserProfile userProfile)

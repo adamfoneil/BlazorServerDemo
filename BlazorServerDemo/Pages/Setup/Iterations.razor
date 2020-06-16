@@ -1,0 +1,137 @@
+﻿@page "/setup/iterations"
+@inject Data Data   
+
+<h3>Iterations</h3>
+<p>An &quot;iteration&quot; refers to any defined time span during which work is done. It means the same thing as &quot;sprint&quot; in Agile
+    terminology.</p>
+
+<ErrorMessage @ref="error"/>
+
+<div class="row">
+    <label>Current Schedule: </label>
+    <select name="CurrentScheduleId" class="form-control ml-2">
+        <option></option>
+        @foreach (var item in AllSchedules)
+        {
+            <option value="@item.Id">@item.Name</option>
+        }
+    </select>
+</div>
+
+<FilterActive @ref="activeFilter" FilterChanged="OnFilterChanged"/>
+
+<RadzenGrid Data="AllSchedules" @ref="IterationGrid" RowUpdate="OnRowUpdate" TItem="IterationSchedule">
+    <Columns>
+        <RadzenGridColumn TItem="IterationSchedule" Property="Name">
+            <HeaderTemplate>
+                Schedule Name
+            </HeaderTemplate>
+            <EditTemplate Context="schedule">
+                <RadzenTextBox @bind-Value="schedule.Name" class="form-control"/>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="IterationSchedule" Property="WorkingDays">
+            <HeaderTemplate>
+                Working Days
+            </HeaderTemplate>
+            <EditTemplate Context="schedule">
+                <RadzenNumeric @bind-Value="schedule.WorkingDays" class="form-control"/>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="IterationSchedule" Property="OffDays">
+            <HeaderTemplate>
+                Off Days
+            </HeaderTemplate>
+            <EditTemplate Context="schedule">
+                <RadzenNumeric @bind-Value="schedule.OffDays" class="form-control"/>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="IterationSchedule" Property="EndDay">
+            <HeaderTemplate>
+                End Day
+            </HeaderTemplate>
+            <EditTemplate>
+                <RadzenDropDown TValue="DayOfWeek" Data="GetDayValues()" ValueProperty="Key" TextProperty="Value"/>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="IterationSchedule">
+            <Template Context="IterationSchedule">
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="edit" Click="@(args => IterationGrid.EditRow(IterationSchedule))"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="@(args => DeleteRow(IterationSchedule))"/>
+            </Template>
+            <EditTemplate Context="IterationSchedule">
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" Click="@((args) => IterationGrid.UpdateRow(IterationSchedule))"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="cancel" Click="@((args) => IterationGrid.CancelEditRow(IterationSchedule))"/>                    
+            </EditTemplate>
+        </RadzenGridColumn>
+
+    </Columns>
+</RadzenGrid>
+
+<div class="pt-3 pl-3">
+    <EditForm Model="CreateSchedule" OnSubmit="CreateScheduleSubmit">
+        <div class="row">
+            <div class="form-group">
+                <label>Create Schedule:</label>
+                <InputText @bind-Value="CreateSchedule.Name" class="form-control" required="required" placeholder="schedule name"/>
+                <button class="btn btn-dark">Create Schedule</button>
+            </div>            
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    ErrorMessage error;
+    RadzenGrid<IterationSchedule> IterationGrid;
+    IterationSchedule CurrentSchedule = new IterationSchedule();
+    List<IterationSchedule> AllSchedules = new List<IterationSchedule>();
+    FilterActive activeFilter;
+    IterationSchedule CreateSchedule = new IterationSchedule();
+
+    Dictionary<DayOfWeek, string> GetDayValues() => Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToDictionary(dw => dw, dw => dw.ToString());
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        CreateSchedule = new IterationSchedule() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
+
+        var scheduleId = (await Data.GetWorkspaceAsync())?.IterationScheduleId ?? 0;
+        CurrentSchedule = await Data.GetAsync<IterationSchedule>(scheduleId);
+        await RefreshListAsync();
+
+        if (!CurrentSchedule?.IsActive ?? false) AllSchedules.Add(CurrentSchedule);
+    }
+
+    async Task OnFilterChanged() => await RefreshListAsync();
+
+    async Task RefreshListAsync()
+    {
+        AllSchedules = (await Data.QueryAsync(new MyIterationSchedules()
+        {
+            WorkspaceId = await Data.GetWorkspaceIdAsync(),
+            IsActive = activeFilter?.Value ?? true
+        })).ToList();
+    }
+
+    async Task OnRowUpdate(IterationSchedule iterationSchedule) => await Data.SaveAsync(iterationSchedule, (exc) => error.Message = exc.Message);
+
+    async Task DeleteRow(IterationSchedule schedule) => await Data.DeleteAsync<IterationSchedule>(schedule, schedule.Id,
+        (exc) => error.Message = exc.Message,
+        (schedule) => AllSchedules.Remove(schedule));
+
+    async Task CreateScheduleSubmit()
+    {
+        CreateSchedule.WorkingDays = 10;
+        CreateSchedule.OffDays = 4;
+        CreateSchedule.EndDay = DayOfWeek.Saturday;
+
+        await Data.SaveAsync(CreateSchedule,
+        (exc) => error.Message = exc.Message,
+        async () =>
+        {
+            CreateSchedule = new IterationSchedule() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
+            await RefreshListAsync();
+        });
+    }
+}

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
-    public class IterationSetup : BaseTable
+    public class IterationSchedule : BaseTable
     {
         [Key]
         [References(typeof(Workspace))]
@@ -30,6 +30,8 @@ namespace Models
         /// <summary>
         /// when do iterations end?
         /// </summary>
-        public DayOfWeek EndDay { get; set; } = DayOfWeek.Sunday;
+        public DayOfWeek EndDay { get; set; } = DayOfWeek.Saturday;
+
+        public bool IsActive { get; set; } = true;
     }
 }

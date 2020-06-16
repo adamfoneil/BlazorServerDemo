@@ -15,7 +15,7 @@ namespace Models
         [References(typeof(UserProfile))]
         public int? OwnerUserId { get; set; }
 
-        [References(typeof(IterationSetup))]
-        public int? IterationSetupId { get; set; }
+        [References(typeof(IterationSchedule))]
+        public int? IterationScheduleId { get; set; }
     }
 }

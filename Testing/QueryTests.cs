@@ -39,5 +39,11 @@ namespace Testing
         {
             QueryHelper.Test<MyActivities>(GetConnection);
         }
+
+        [TestMethod]
+        public void MyIterationSchedulesQuery()
+        {
+            QueryHelper.Test<MyIterationSchedules>(GetConnection);
+        }
     }
 }
