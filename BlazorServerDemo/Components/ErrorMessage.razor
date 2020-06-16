@@ -1,11 +1,19 @@
-﻿@if (!string.IsNullOrEmpty(Content))
+﻿@if (!string.IsNullOrEmpty(_message))
 {
     <div class="alert alert-danger">
-        @Content
-    </div>    
+        @_message
+    </div>
 }
 
 @code {
-    [Parameter]
-    public string Content { get; set; }
+    private string _message;
+    public string Message
+    {
+        get { return _message; }
+        set
+        {
+            _message = value;
+            StateHasChanged();
+        }
+    }
 }

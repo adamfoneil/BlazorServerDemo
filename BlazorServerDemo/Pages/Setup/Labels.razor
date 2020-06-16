@@ -112,7 +112,7 @@
         }
         else
         {
-            error.Content = result.Exception.Message;
+            error.Message = result.Exception.Message;
         }
     }
 
@@ -144,7 +144,7 @@
         }
         else
         {
-            ErrorMessage = result.Exception.Message;
+            error.Message = result.Exception.Message;
         }
     }
 
@@ -154,7 +154,7 @@
 
     async Task DeleteLabel(int id)
     {
-        ErrorMessage = null;
+        error.Message = null;
 
         var result = await Data.TryDeleteAsync<Label>(id);
         if (result.IsSuccessful)
@@ -163,7 +163,7 @@
         }
         else
         {
-            ErrorMessage = result.Exception.Message;
+            error.Message = result.Exception.Message;
         }
     }
 }
