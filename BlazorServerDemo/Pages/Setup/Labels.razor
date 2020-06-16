@@ -106,6 +106,8 @@
 
     async Task OnRowUpdate(Label label) => await Data.SaveAsync(label, (exc) => error.Message = exc.Message);
 
+    async Task DeleteRow(Label label) => await Data.DeleteAsync<Label>(label, label.Id, (exc) => error.Message = exc.Message, (label) => AllLabels.Remove(label));
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -128,24 +130,11 @@
     }
 
     async Task RefreshListAsync()
-    {        
+    {
         AllLabels = (await Data.QueryAsync(new MyLabels()
         {
             WorkspaceId = await Data.GetWorkspaceIdAsync(),
             IsActive = activeFilter?.Value ?? true
         })).ToList();
-    }
-
-    async Task DeleteRow(Label label)
-    {
-        var result = await Data.TryDeleteAsync<Label>(label.Id);
-        if (result.IsSuccessful)
-        {
-            AllLabels.Remove(label);
-        }
-        else
-        {
-            error.Message = result.Exception.Message;
-        }
     }    
 }

@@ -77,7 +77,9 @@
 
     async Task OnRowUpdate(Activity activity) => await Data.SaveAsync(activity, (exc) => error.Message = exc.Message);
 
-    void CancelEdit(Activity activity) => ActivityGrid.CancelEditRow(activity);
+    async Task DeleteRow(Activity activity) => await Data.DeleteAsync<Activity>(activity, 
+        activity.Id, (exc) => error.Message = exc.Message, 
+        (activity) => AllActivities.Remove(activity));
 
     protected override async Task OnInitializedAsync()
     {
@@ -107,18 +109,5 @@
             WorkspaceId = await Data.GetWorkspaceIdAsync(),
             IsActive = activeFilter?.Value ?? true
         })).ToList();
-    }
-
-    async Task DeleteRow(Activity activity)
-    {
-        var result = await Data.TryDeleteAsync<Activity>(activity.Id);
-        if (result.IsSuccessful)
-        {
-            AllActivities.Remove(activity);
-        }
-        else
-        {
-            error.Message = result.Exception.Message;
-        }
     }
 }

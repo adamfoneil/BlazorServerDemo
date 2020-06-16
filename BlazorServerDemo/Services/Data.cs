@@ -66,15 +66,17 @@ namespace BlazorServerDemo.Services
             return await SaveAsync(@model, user: _userProfile);
         }
 
-        public async Task<int> SaveAsync<TModel>(TModel @model, Action<Exception> onError)
+        public async Task<int> SaveAsync<TModel>(TModel @model, Action<Exception> onException, Func<Task> onSuccess = null)
         {
             try
             {
-                return await SaveAsync(@model);
+                var result = await SaveAsync(@model);
+                if (onSuccess != null) await onSuccess();
+                return result;
             }
             catch (Exception exc)
             {
-                onError.Invoke(exc);
+                onException.Invoke(exc);
                 return default;
             }
         }
@@ -83,6 +85,20 @@ namespace BlazorServerDemo.Services
         {
             if (_userProfile is null) _userProfile = await GetUserProfileAsync();
             return await TrySaveAsync(model, user: _userProfile);
+        }
+
+        public async Task DeleteAsync<TModel>(TModel @model, int id, Action<Exception> onException, Action<TModel> onSuccess = null)
+        {
+            try
+            {
+                if (_userProfile is null) _userProfile = await GetUserProfileAsync();
+                await DeleteAsync<TModel>(id, user: _userProfile);
+                onSuccess?.Invoke(@model);
+            }
+            catch (Exception exc)
+            {
+                onException.Invoke(exc);
+            }
         }
 
         public async Task<IEnumerable<T>> QueryAsync<T>(Query<T> query)
