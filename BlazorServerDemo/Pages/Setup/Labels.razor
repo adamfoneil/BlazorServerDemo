@@ -19,7 +19,7 @@
 
 <RadzenGrid Data="@AllLabels" TItem="Label" @ref="LabelGrid" RowUpdate="OnRowUpdate">
     <Columns>
-        <RadzenGridColumn Property="Name" TIem="Label">
+        <RadzenGridColumn Property="Name" TItem="Label">
             <EditTemplate Context="label">
                 <RadzenTextBox @bind-Value="label.Name" class="form-control"/>
             </EditTemplate>
@@ -30,17 +30,11 @@
             </EditTemplate>
         </RadzenGridColumn>
         <RadzenGridColumn Property="TextColor" TItem="Label">
-            <HeaderTemplate>
-                Text Color
-            </HeaderTemplate>
             <EditTemplate Context="label">
                 <RadzenTextBox @bind-Value="label.TextColor" class="form-control"/>
             </EditTemplate>
         </RadzenGridColumn>
         <RadzenGridColumn Property="IsActive" Title="Active" TItem="Label">
-            <HeaderTemplate>
-                Active
-            </HeaderTemplate>
             <EditTemplate Context="label">
                 <RadzenCheckBox @bind-Value="label.IsActive"/>
             </EditTemplate>            
