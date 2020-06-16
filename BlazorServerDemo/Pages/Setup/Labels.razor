@@ -17,27 +17,47 @@
     </select>    
 </label>
 
-<table class="table">
-    <tr>
-        <th>Label Name</th>
-        <th>Back Color</th>
-        <th>Text Color</th>
-        <th>Active</th>
-        <th>Preview</th>
-        <th></th>
-    </tr>
-    @foreach (var item in AllLabels)
-    {
-        <tr>
-            <td>@item.Name</td>
-            <td>@item.BackColor</td>
-            <td>@item.TextColor</td>
-            <td></td>
-            <td><span class="badge" style="background-color:@item.BackColor;color:@item.TextColor">@item.Name</span></td>
-            <td><button @onclick="@(e => DeleteLabel(item.Id))" href="#" class="btn btn-sm btn-secondary">delete</button></td>
-        </tr>
-    }
-</table>
+<RadzenGrid Data="@AllLabels" TItem="Label" @ref="LabelGrid" RowUpdate="OnRowUpdate">
+    <Columns>
+        <RadzenGridColumn Property="Name" TIem="Label">
+            <EditTemplate Context="label">
+                <RadzenTextBox @bind-Value="label.Name" class="form-control"/>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn Property="BackColor" TItem="Label">
+            <EditTemplate Context="label">
+                <RadzenTextBox @bind-Value="label.BackColor" class="form-control"/>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn Property="TextColor" TItem="Label">
+            <HeaderTemplate>
+                Text Color
+            </HeaderTemplate>
+            <EditTemplate Context="label">
+                <RadzenTextBox @bind-Value="label.TextColor" class="form-control"/>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn Property="IsActive" Title="Active" TItem="Label">
+            <HeaderTemplate>
+                Active
+            </HeaderTemplate>
+            <EditTemplate Context="label">
+                <RadzenCheckBox @bind-Value="label.IsActive"/>
+            </EditTemplate>            
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Label">
+            <Template Context="label">
+                <RadzenButton Icon="edit" Click="@(args => EditRow(label))"/>
+                <RadzenButton Icon="delete" Click="@(args => DeleteRow(label))"/>
+            </Template>
+            <EditTemplate Context="label">
+                <RadzenButton Icon="save" Click="@((args) => SaveRow(label))"/>
+                <RadzenButton Icon="cancel" Click="@((args) => CancelEdit(label))"/>                    
+            </EditTemplate>
+        </RadzenGridColumn>
+    </Columns>
+</RadzenGrid>
+
 
 <EditForm Model="CreateLabel" OnSubmit="CreateLabelSubmit">
     <div class="row">
@@ -67,13 +87,15 @@
 </EditForm>
 
 @code {
-    private string ErrorMessage { get; set; }
+    RadzenGrid<Label> LabelGrid;
 
-    public bool? IsActive { get; set; }
+    string ErrorMessage;
 
-    public Label CreateLabel { get; set; } = new Label();
+    bool? IsActive;
 
-    protected IEnumerable<Label> AllLabels { get; set; } = Enumerable.Empty<Label>();
+    Label CreateLabel = new Label();
+
+    IEnumerable<Label> AllLabels { get; set; } = Enumerable.Empty<Label>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -112,6 +134,20 @@
             IsActive = IsActive ?? true
         });
     }
+
+    void EditRow(Label label) => LabelGrid.EditRow(label);
+
+    void SaveRow(Label label) => LabelGrid.UpdateRow(label);
+
+    async Task DeleteRow(Label label)
+    {
+        await Data.DeleteAsync<Label>(label.Id);
+        LabelGrid.Reload();
+    }
+
+    void CancelEdit(Label label) => LabelGrid.CancelEditRow(label);
+
+    async Task OnRowUpdate(Label label) => await Data.SaveAsync(label);
 
     async Task DeleteLabel(int id)
     {
