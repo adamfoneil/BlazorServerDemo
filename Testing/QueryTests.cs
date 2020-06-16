@@ -33,5 +33,11 @@ namespace Testing
         {
             QueryHelper.Test<MyWorkspaces>(GetConnection);
         }
+
+        [TestMethod]
+        public void MyActivitiesQuery()
+        {
+            QueryHelper.Test<MyActivities>(GetConnection);
+        }
     }
 }

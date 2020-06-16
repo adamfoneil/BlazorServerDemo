@@ -4,10 +4,121 @@
 <h3>Activities</h3>
 <p>Use activities to define the things your teams do, for instance <strong>design</strong>, <strong>develop</strong>, and <strong>deploy</strong></p>
 
-<ErrorMessage/>
+<ErrorMessage @ref="error"/>
 
+<FilterActive @ref="activeFilter" FilterChanged="OnFilterChanged"/>
 
+<RadzenGrid TItem="Activity" @ref="ActivityGrid" RowUpdate="OnRowUpdate" Data="AllActivities">
+    <Columns>
+        <RadzenGridColumn Property="Name" TItem="Activity">
+            <HeaderTemplate>
+                Activity Name
+            </HeaderTemplate>
+            <EditTemplate Context="activity">
+                <RadzenTextBox @bind-Value="activity.Name" class="form-control"/>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn Property="Order" TItem="Activity">
+            <HeaderTemplate>
+                Order
+            </HeaderTemplate>
+            <EditTemplate Context="activity">
+                <RadzenNumeric @bind-Value="activity.Order" class="form-control"/>
+            </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn Property="IsActive" TItem="Activity">
+            <HeaderTemplate>
+                Active
+            </HeaderTemplate>
+            <EditTemplate Context="activity">
+                <RadzenCheckBox @bind-Value="activity.IsActive"/>
+            </EditTemplate>            
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="Activity">
+            <Template Context="activity">
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="edit" Click="@(args => ActivityGrid.EditRow(activity))"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="@(args => DeleteRow(activity))"/>
+            </Template>
+            <EditTemplate Context="activity">
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" Click="@((args) => ActivityGrid.UpdateRow(activity))"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="cancel" Click="@((args) => ActivityGrid.CancelEditRow(activity))"/>                    
+            </EditTemplate>
+        </RadzenGridColumn>
+    </Columns>
+</RadzenGrid>
+
+<div class="pt-3 pl-3">
+    <EditForm Model="CreateActivity" OnSubmit="OnCreateActivity">
+        <div class="row">
+            <div class="form-group">
+                <label>Create Activity:</label>
+                <InputText @bind-Value="CreateActivity.Name" class="form-control" required="required"/>
+            </div>
+            <div class="form-group">
+                <label>Order:</label>
+                <InputNumber @bind-Value="CreateActivity.Order" class="form-control" required="required"/>                
+            </div>
+        </div>
+        <div class="row">
+            <button class="btn btn-dark">Create Label</button>
+        </div>
+    </EditForm>
+</div>
 
 @code {
+    RadzenGrid<Activity> ActivityGrid;
+    Activity CreateActivity = new Activity();
+    ErrorMessage error;
+    FilterActive activeFilter;
 
+    List<Activity> AllActivities = new List<Activity>();
+
+    async Task OnFilterChanged() => await RefreshListAsync();
+
+    async Task OnRowUpdate(Activity activity) => await Data.SaveAsync(activity, (exc) => error.Message = exc.Message);
+
+    void CancelEdit(Activity activity) => ActivityGrid.CancelEditRow(activity);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        CreateActivity = new Activity() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
+        await RefreshListAsync();
+    }
+
+    async Task OnCreateActivity()
+    {
+        var result = await Data.TrySaveAsync(CreateActivity);
+        if (result.IsSuccessful)
+        {
+            CreateActivity = new Activity() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
+            await RefreshListAsync();
+        }
+        else
+        {
+            error.Message = result.Exception.Message;
+        }
+    }
+
+    async Task RefreshListAsync()
+    {
+        AllActivities = (await Data.QueryAsync(new MyActivities()
+        {
+            WorkspaceId = await Data.GetWorkspaceIdAsync(),
+            IsActive = activeFilter?.Value ?? true
+        })).ToList();
+    }
+
+    async Task DeleteRow(Activity activity)
+    {
+        var result = await Data.TryDeleteAsync<Activity>(activity.Id);
+        if (result.IsSuccessful)
+        {
+            AllActivities.Remove(activity);
+        }
+        else
+        {
+            error.Message = result.Exception.Message;
+        }
+    }
 }

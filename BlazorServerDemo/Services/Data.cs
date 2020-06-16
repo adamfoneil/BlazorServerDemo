@@ -2,8 +2,11 @@
 using Dapper.CX.SqlServer.Services;
 using Dapper.QX;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.SqlServer.Management.Smo;
+using Microsoft.SqlServer.Management.XEvent;
 using Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -61,6 +64,19 @@ namespace BlazorServerDemo.Services
         {
             if (_userProfile is null) _userProfile = await GetUserProfileAsync();
             return await SaveAsync(@model, user: _userProfile);
+        }
+
+        public async Task<int> SaveAsync<TModel>(TModel @model, Action<Exception> onError)
+        {
+            try
+            {
+                return await SaveAsync(@model);
+            }
+            catch (Exception exc)
+            {
+                onError.Invoke(exc);
+                return default;
+            }
         }
 
         public async Task<Result> TrySaveAsync<TModel>(TModel @model)
