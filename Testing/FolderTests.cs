@@ -1,12 +1,8 @@
 ﻿using BlazorServerDemo.Queries;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
 namespace Testing
 {
