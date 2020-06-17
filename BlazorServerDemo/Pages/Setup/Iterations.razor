@@ -58,9 +58,17 @@
             <HeaderTemplate>
                 End Day
             </HeaderTemplate>
-            <EditTemplate>
-                <RadzenDropDown TValue="int" Data="GetDayValues()" ValueProperty="Key" TextProperty="Value"/>
+            <EditTemplate Context="schedule">
+                <RadzenDropDown @bind-Value="schedule.EndDay" TValue="DayOfWeek" Data="GetDayValues()" ValueProperty="Value" TextProperty="Text"/>
             </EditTemplate>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="IterationSchedule" Property="IsActive">
+            <HeaderTemplate>
+                Active
+            </HeaderTemplate>
+            <EditTemplate Context="schedule">
+                <RadzenCheckBox @bind-Value="schedule.IsActive"/>
+            </EditTemplate>            
         </RadzenGridColumn>
         <RadzenGridColumn TItem="IterationSchedule">
             <Template Context="IterationSchedule">
@@ -96,7 +104,7 @@
     FilterActive activeFilter;
     IterationSchedule CreateSchedule = new IterationSchedule();
 
-    Dictionary<int, string> GetDayValues() => Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToDictionary(dw => (int)dw, dw => dw.ToString());
+    IEnumerable<DropdownItem<DayOfWeek>> GetDayValues() => Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().Select(dw => new DropdownItem<DayOfWeek>(dw, dw.ToString()));
 
     protected override async Task OnInitializedAsync()
     {
