@@ -1,6 +1,5 @@
 ﻿using Dapper.QX;
 using Dapper.QX.Interfaces;
-using Models;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
