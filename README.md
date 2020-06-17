@@ -17,4 +17,4 @@ LocalDb.CreateFromResourceAsync(Assembly.GetExecutingAssembly(), "BlazorServerDe
 
 ## Walkthroughs
 As I get around to making demo videos, I'll link them below:
-- a few simple Crud pages: https://1drv.ms/u/s!AvguHRnyJtWMlvsmlGydpZqevIAyoQ?e=0LteG5
+- 6/17/20: a few simple Crud pages: https://1drv.ms/u/s!AvguHRnyJtWMlvsmlGydpZqevIAyoQ?e=0LteG5
