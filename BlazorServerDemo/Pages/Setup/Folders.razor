@@ -1,9 +1,24 @@
 ﻿@page "/setup/folders"
+@inject Data Data 
 
 <h3>Folders</h3>
 <p>Use folders to group your work items in ways that make sense to your organization.</p>
-<p>A typical hierarchy might be <strong>Team</strong> -> <strong>Application</strong> -> <strong>Project</strong></p>
+<p>A typical hierarchy might be <strong>Teams</strong> / <strong>Applications</strong> / <strong>Projects</strong></p>
+
+<RadzenTree Data="AllFolders">
+    
+</RadzenTree>
 
 @code {
+    List<MyFolderTreeResult> AllFolders;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        AllFolders = (await Data.QueryAsync(new MyFolderTree()
+        {
+            WorkspaceId = await Data.GetWorkspaceIdAsync()
+        })).ToList();
+    }
 }

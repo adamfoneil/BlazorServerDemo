@@ -1,0 +1,82 @@
+﻿{
+  "Id": -23,
+  "Name": "root",
+  "ParentId": 0,
+  "Children": [
+    {
+      "Id": 454,
+      "Name": "Wyoming",
+      "ParentId": -23,
+      "Children": [
+        {
+          "Id": 29,
+          "Name": "Buford",
+          "ParentId": 454,
+          "Children": []
+        },
+        {
+          "Id": 37,
+          "Name": "Lusk",
+          "ParentId": 454,
+          "Children": []
+        },
+        {
+          "Id": 927,
+          "Name": "Farson",
+          "ParentId": 454,
+          "Children": []
+        }
+      ]
+    },
+    {
+      "Id": 594,
+      "Name": "Virginia",
+      "ParentId": -23,
+      "Children": [
+        {
+          "Id": 64,
+          "Name": "Bodtyon",
+          "ParentId": 594,
+          "Children": []
+        },
+        {
+          "Id": 68,
+          "Name": "Goshen",
+          "ParentId": 594,
+          "Children": []
+        },
+        {
+          "Id": 713,
+          "Name": "Wise",
+          "ParentId": 594,
+          "Children": []
+        }
+      ]
+    },
+    {
+      "Id": 996,
+      "Name": "Nebraska",
+      "ParentId": -23,
+      "Children": [
+        {
+          "Id": 436,
+          "Name": "Gothenburg",
+          "ParentId": 996,
+          "Children": []
+        },
+        {
+          "Id": 413,
+          "Name": "Wahoo",
+          "ParentId": 996,
+          "Children": []
+        },
+        {
+          "Id": 217,
+          "Name": "Neligh",
+          "ParentId": 996,
+          "Children": []
+        }
+      ]
+    }
+  ]
+}

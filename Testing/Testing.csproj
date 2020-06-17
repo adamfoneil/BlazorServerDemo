@@ -7,7 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\FolderStructure.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="..\BlazorServerDemo\appsettings.json" Link="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\FolderStructure.txt" />
   </ItemGroup>
 
   <ItemGroup>

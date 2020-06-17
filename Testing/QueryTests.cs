@@ -23,27 +23,18 @@ namespace Testing
         }
 
         [TestMethod]
-        public void MyLabelsQuery()
-        {
-            QueryHelper.Test<MyLabels>(GetConnection);
-        }
+        public void MyLabelsQuery() => QueryHelper.Test<MyLabels>(GetConnection);
 
         [TestMethod]
-        public void MyWorkspacesQuery()
-        {
-            QueryHelper.Test<MyWorkspaces>(GetConnection);
-        }
+        public void MyWorkspacesQuery() => QueryHelper.Test<MyWorkspaces>(GetConnection);
 
         [TestMethod]
-        public void MyActivitiesQuery()
-        {
-            QueryHelper.Test<MyActivities>(GetConnection);
-        }
+        public void MyActivitiesQuery() => QueryHelper.Test<MyActivities>(GetConnection);
 
         [TestMethod]
-        public void MyIterationSchedulesQuery()
-        {
-            QueryHelper.Test<MyIterationSchedules>(GetConnection);
-        }
+        public void MyIterationSchedulesQuery() => QueryHelper.Test<MyIterationSchedules>(GetConnection);
+
+        [TestMethod]
+        public void MyFolderTreeQuery() => QueryHelper.Test<MyFolderTree>(GetConnection);
     }
 }
