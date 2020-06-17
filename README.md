@@ -14,3 +14,7 @@ LocalDb.CreateFromResourceAsync(Assembly.GetExecutingAssembly(), "BlazorServerDe
 - [Models](https://github.com/adamfoneil/BlazorServerDemo/tree/master/Models) has model classes
 - [CmdConsole](https://github.com/adamfoneil/BlazorServerDemo/tree/master/CmdConsole) was just a little thing to create the database zip file
 - [Testing](https://github.com/adamfoneil/BlazorServerDemo/tree/master/Testing) is what it sounds like, but as of now just has [QueryTests](https://github.com/adamfoneil/BlazorServerDemo/blob/master/Testing/QueryTests.cs).
+
+## Walkthroughs
+As I get around to making demo videos, I'll link them below:
+- a few simple Crud pages: https://1drv.ms/u/s!AvguHRnyJtWMlvsmlGydpZqevIAyoQ?e=0LteG5
