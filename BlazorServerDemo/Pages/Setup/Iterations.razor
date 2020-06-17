@@ -46,12 +46,20 @@
                 <RadzenNumeric @bind-Value="schedule.OffDays" class="form-control"/>
             </EditTemplate>
         </RadzenGridColumn>
+        <RadzenGridColumn TItem="IterationSchedule" Property="TotalDays">
+            <HeaderTemplate>
+                Total Days
+            </HeaderTemplate>           
+            <Template Context="schedule">
+                <span>@schedule.TotalDays</span>
+            </Template>
+        </RadzenGridColumn>
         <RadzenGridColumn TItem="IterationSchedule" Property="EndDay">
             <HeaderTemplate>
                 End Day
             </HeaderTemplate>
             <EditTemplate>
-                <RadzenDropDown TValue="DayOfWeek" Data="GetDayValues()" ValueProperty="Key" TextProperty="Value"/>
+                <RadzenDropDown TValue="int" Data="GetDayValues()" ValueProperty="Key" TextProperty="Value"/>
             </EditTemplate>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="IterationSchedule">
@@ -88,7 +96,7 @@
     FilterActive activeFilter;
     IterationSchedule CreateSchedule = new IterationSchedule();
 
-    Dictionary<DayOfWeek, string> GetDayValues() => Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToDictionary(dw => dw, dw => dw.ToString());
+    Dictionary<int, string> GetDayValues() => Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToDictionary(dw => (int)dw, dw => dw.ToString());
 
     protected override async Task OnInitializedAsync()
     {
