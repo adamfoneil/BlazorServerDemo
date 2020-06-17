@@ -15,6 +15,8 @@ namespace Models
         [MaxLength(50)]
         public string Name { get; set; }
 
+        public DateTime SeedDate { get; set; }
+
         /// <summary>
         /// number of working days in a sprint (default 2x Mon -> Fri)
         /// </summary>
@@ -26,11 +28,6 @@ namespace Models
         public int OffDays { get; set; } = 4;
 
         public int TotalDays => WorkingDays + OffDays;
-
-        /// <summary>
-        /// when do iterations end?
-        /// </summary>
-        public DayOfWeek EndDay { get; set; } = DayOfWeek.Saturday;
 
         public bool IsActive { get; set; } = true;
     }

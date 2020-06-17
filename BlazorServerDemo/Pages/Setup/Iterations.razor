@@ -30,6 +30,17 @@
                 <RadzenTextBox @bind-Value="schedule.Name" class="form-control"/>
             </EditTemplate>
         </RadzenGridColumn>
+        <RadzenGridColumn TItem="IterationSchedule" Property="SeedDate">
+            <HeaderTemplate>
+                Seed Date
+            </HeaderTemplate>
+            <EditTemplate Context="schedule">
+                <RadzenDatePicker @bind-Value="schedule.SeedDate" DateFormat="M/d/yy"/>
+            </EditTemplate>
+            <Template Context="schedule">
+                <span>@schedule.SeedDate.ToString("ddd M/d/yy")</span>
+            </Template>
+        </RadzenGridColumn>
         <RadzenGridColumn TItem="IterationSchedule" Property="WorkingDays">
             <HeaderTemplate>
                 Working Days
@@ -53,14 +64,6 @@
             <Template Context="schedule">
                 <span>@schedule.TotalDays</span>
             </Template>
-        </RadzenGridColumn>
-        <RadzenGridColumn TItem="IterationSchedule" Property="EndDay">
-            <HeaderTemplate>
-                End Day
-            </HeaderTemplate>
-            <EditTemplate Context="schedule">
-                <RadzenDropDown @bind-Value="schedule.EndDay" TValue="DayOfWeek" Data="GetDayValues()" ValueProperty="Value" TextProperty="Text"/>
-            </EditTemplate>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="IterationSchedule" Property="IsActive">
             <HeaderTemplate>
@@ -89,9 +92,13 @@
         <div class="row">
             <div class="form-group">
                 <label>Create Schedule:</label>
-                <InputText @bind-Value="CreateSchedule.Name" class="form-control" required="required" placeholder="schedule name"/>
+                <InputText @bind-Value="CreateSchedule.Name" class="form-control" required="required" placeholder="schedule name"/>                
+            </div>    
+            <div class="form-group">
+                <label>Seed Date:</label>
+                <RadzenDatePicker @bind-Value="CreateSchedule.SeedDate" required="required"/>
                 <button class="btn btn-dark">Create Schedule</button>
-            </div>            
+            </div>    
         </div>
     </EditForm>
 </div>
@@ -103,8 +110,6 @@
     List<IterationSchedule> AllSchedules = new List<IterationSchedule>();
     FilterActive activeFilter;
     IterationSchedule CreateSchedule = new IterationSchedule();
-
-    IEnumerable<DropdownItem<DayOfWeek>> GetDayValues() => Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().Select(dw => new DropdownItem<DayOfWeek>(dw, dw.ToString()));
 
     protected override async Task OnInitializedAsync()
     {
@@ -139,8 +144,7 @@
     async Task CreateScheduleSubmit()
     {
         CreateSchedule.WorkingDays = 10;
-        CreateSchedule.OffDays = 4;
-        CreateSchedule.EndDay = DayOfWeek.Saturday;
+        CreateSchedule.OffDays = 4;        
 
         await Data.SaveAsync(CreateSchedule,
         (exc) => error.Message = exc.Message,
