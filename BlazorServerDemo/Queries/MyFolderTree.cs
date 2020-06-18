@@ -1,5 +1,6 @@
 ﻿using Dapper.QX;
 using Dapper.QX.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -12,43 +13,6 @@ namespace BlazorServerDemo.Queries
         public string Name { get; set; }
         public int Level { get; set; }
         public int ParentId { get; set; }
-    }
-
-    public class FolderStructure
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int ParentId { get; set; }
-        public IEnumerable<FolderStructure> Children { get; set; }
-
-        public static FolderStructure FromFolders(IEnumerable<MyFolderTreeResult> folders)
-        {
-            // because of how folders are queried, there can be only one root
-            // and it's the only one with a negative Id, which is the workspace itself
-            var root = folders.Single(f => f.Id < 0);
-
-            FolderStructure result = new FolderStructure()
-            {
-                Id = root.Id,
-                Name = root.Name,
-                Children = getChildren(root.Id)
-            };
-
-            return result;
-
-            IEnumerable<FolderStructure> getChildren(int parentId)
-            {
-                return folders
-                    .Where(f => f.ParentId == parentId)
-                    .Select(f => new FolderStructure()
-                    {
-                        Id = f.Id,
-                        Name = f.Name,
-                        ParentId = f.ParentId,
-                        Children = getChildren(f.Id)
-                    });
-            }
-        }
     }
 
     /// <summary>
@@ -89,4 +53,46 @@ namespace BlazorServerDemo.Queries
             return TestExecuteHelper(connection);
         }
     }
+
+    /// <summary>
+    /// ended up not needing this, but it shows example of building hierarchy recursively from query results
+    /// </summary>
+    [Obsolete]
+    public class FolderStructure
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int ParentId { get; set; }
+        public IEnumerable<FolderStructure> Children { get; set; }
+
+        public static FolderStructure FromFolders(IEnumerable<MyFolderTreeResult> folders)
+        {
+            // because of how folders are queried, there can be only one root
+            // and it's the only one with a negative Id, which is the workspace itself
+            var root = folders.Single(f => f.Id < 0);
+
+            FolderStructure result = new FolderStructure()
+            {
+                Id = root.Id,
+                Name = root.Name,
+                Children = getChildren(root.Id)
+            };
+
+            return result;
+
+            IEnumerable<FolderStructure> getChildren(int parentId)
+            {
+                return folders
+                    .Where(f => f.ParentId == parentId)
+                    .Select(f => new FolderStructure()
+                    {
+                        Id = f.Id,
+                        Name = f.Name,
+                        ParentId = f.ParentId,
+                        Children = getChildren(f.Id)
+                    });
+            }
+        }
+    }
+
 }
