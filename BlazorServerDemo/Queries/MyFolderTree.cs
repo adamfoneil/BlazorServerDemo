@@ -13,27 +13,24 @@ namespace BlazorServerDemo.Queries
         public string Name { get; set; }
         public int Level { get; set; }
         public int ParentId { get; set; }
+        public string FullPath { get; set; }
     }
 
-    /// <summary>
-    /// This recursive query is in case I ever need the Level column.
-    /// I'm not sure I will need that, but I wanted a refresher on how to do this
-    /// </summary>
     public class MyFolderTree : Query<MyFolderTreeResult>, ITestableQuery
     {
         public MyFolderTree() : base(
             @"WITH [tree] AS (
                 SELECT 
-                    [ws].[Id] * -1 AS [Id], [ws].[Name], 0 AS [Level], 0 AS [ParentId]
+                    [ws].[Id] * -1 AS [Id], [ws].[Name], 0 AS [Level], 0 AS [ParentId], CAST([ws].[Name] as varchar(255)) AS [FullPath]
                 FROM 
-                    [dbo].[Workspace] [ws]                    
-                WHERE 
+                    [dbo].[Workspace] [ws]  
+                WHERE
                     [ws].[Id]=@workspaceId
 
                 UNION ALL
 
                 SELECT
-                    [f].[Id], [f].[Name], [t].[Level]+1 AS [Level], [f].[ParentId]
+                    [f].[Id], [f].[Name], [t].[Level]+1 AS [Level], [f].[ParentId], CAST(CONCAT([t].[FullPath], ' / ', [f].[Name]) as varchar(255)) AS [FullPath]
                 FROM 
                     [dbo].[Folder] [f]                    
                     INNER JOIN [tree] [t] ON [f].[ParentId]=[t].[Id]                
