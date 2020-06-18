@@ -5,9 +5,13 @@
 <p>Use folders to group your work items in ways that make sense to your organization.</p>
 <p>A typical hierarchy might be <strong>Teams</strong> / <strong>Applications</strong> / <strong>Projects</strong></p>
 
-<RadzenTree Data="AllFolders">
-    
-</RadzenTree>
+@if (AllFolders != null)
+{
+    var root = GetRoot();
+    <RadzenTree Data="AllFolders" Expand="@(args => OnExpand(args))">
+        <RadzenTreeItem Value="@root" Text="@root.Name" HasChildren="@HasChildren(root)"/>
+    </RadzenTree>
+}
 
 @code {
     List<MyFolderTreeResult> AllFolders;
@@ -21,4 +25,23 @@
             WorkspaceId = await Data.GetWorkspaceIdAsync()
         })).ToList();
     }
+
+    MyFolderTreeResult GetRoot() => AllFolders.Single(f => f.Id < 0);
+
+    bool HasChildren(MyFolderTreeResult folder) => AllFolders.Any(f => f.ParentId == folder.Id);
+
+    void OnExpand(TreeExpandEventArgs args)
+    {
+        var folder = args.Value as MyFolderTreeResult;
+        args.Children.Data = AllFolders.Where(f => f.ParentId == folder.Id);
+        args.Children.TextProperty = "Name";
+        args.Children.HasChildren = (item) => AllFolders.Any(f => f.ParentId == (item as MyFolderTreeResult).Id);
+        args.Children.Template = FolderTemplate;
+    }
+
+    RenderFragment<RadzenTreeItem> FolderTemplate = (context) => builder =>
+    {
+        var folder = context.Value as MyFolderTreeResult;
+        builder.AddContent(1, folder.Name);
+    };
 }

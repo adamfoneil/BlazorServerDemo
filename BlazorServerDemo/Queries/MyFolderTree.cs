@@ -52,8 +52,8 @@ namespace BlazorServerDemo.Queries
     }
 
     /// <summary>
-    /// this recursive query is in case I ever need the Level. I'm not sure I will need that,
-    /// but I wanted a refresher on how to do this
+    /// This recursive query is in case I ever need the Level column.
+    /// I'm not sure I will need that, but I wanted a refresher on how to do this
     /// </summary>
     public class MyFolderTree : Query<MyFolderTreeResult>, ITestableQuery
     {
@@ -67,6 +67,7 @@ namespace BlazorServerDemo.Queries
                     [ws].[Id]=@workspaceId
 
                 UNION ALL
+
                 SELECT
                     [f].[Id], [f].[Name], [t].[Level]+1 AS [Level], [f].[ParentId]
                 FROM 
