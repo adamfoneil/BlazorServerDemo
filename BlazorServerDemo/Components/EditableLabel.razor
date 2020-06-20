@@ -1,0 +1,39 @@
+﻿<RadzenLabel @ref="label" @onclick="(args) => EnableEdit(args)" Text="@Text"/>
+<RadzenTextBox @ref="textBox" Value="@_text" @onchange="(args) => OnTextChanged(args)" Visible="false"/>
+
+@code {
+    private string _text;
+    InputText textBox;
+    RadzenLabel label;
+
+    [Parameter]
+    public EventCallback TextChanged { get; set; }
+
+    [Parameter]
+    public string Text
+    {
+        get { return _text; }
+        set
+        {
+            if (value != _text)
+            {
+                _text = value;
+                StateHasChanged();
+            }
+        }
+    }
+
+    void EnableEdit(MouseEventArgs args)
+    {
+        // how do I show something that's currently hidden?
+        // hide label
+        //textBox.Show();        
+    }
+
+    async Task OnTextChanged(ChangeEventArgs args)
+    {
+        Text = args.Value?.ToString() ?? string.Empty;
+        await TextChanged.InvokeAsync(null);
+        // hide text box, and show label again
+    }
+}
