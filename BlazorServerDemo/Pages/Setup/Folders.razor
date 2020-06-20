@@ -10,7 +10,7 @@
 @if (AllFolders != null)
 {
     var root = GetRoot();
-    <RadzenTree Data="AllFolders" Expand="@(args => OnExpand(args))">
+    <RadzenTree Data="AllFolders" Expand="@(args => OnExpand(args))" @ref="tree">
         <RadzenTreeItem Value="@root" Text="@root.Name" HasChildren="@HasChildren(root)"/>
     </RadzenTree>
     
@@ -56,6 +56,7 @@
     RadzenGrid<MyFolderTreeResult> folderGrid;
     ErrorMessage error;
     FolderForm createFolder = new FolderForm();
+    RadzenTree tree;
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,6 +71,8 @@
         {
             WorkspaceId = await Data.GetWorkspaceIdAsync()
         })).ToList();
+
+        //await tree.Expand.InvokeAsync(new TreeExpandEventArgs());
     }
 
     async Task CreateFolderSubmit()
