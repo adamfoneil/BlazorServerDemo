@@ -2,9 +2,6 @@
 using Dapper.CX.SqlServer.Services;
 using Dapper.QX;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.SqlServer.Management.Smo;
-using Microsoft.SqlServer.Management.XEvent;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -106,6 +103,12 @@ namespace BlazorServerDemo.Services
             {
                 onException.Invoke(exc);
             }
+        }
+
+        public async Task<int> MergeAsync<TModel>(TModel model)
+        {
+            var user = await GetUserProfileAsync();
+            return await MergeAsync(model, user: user);
         }
 
         public async Task<IEnumerable<T>> QueryAsync<T>(Query<T> query)

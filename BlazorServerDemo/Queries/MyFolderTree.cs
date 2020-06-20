@@ -1,5 +1,6 @@
 ﻿using Dapper.QX;
 using Dapper.QX.Interfaces;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,6 +15,21 @@ namespace BlazorServerDemo.Queries
         public int Level { get; set; }
         public int ParentId { get; set; }
         public string FullPath { get; set; }
+
+        public Folder ToFolder() => new Folder()
+        {
+            Name = Name,
+            ParentId = ParentId,
+            Id = Id
+        };
+
+        public override bool Equals(object obj)
+        {
+            var test = obj as MyFolderTreeResult;
+            return (test != null) ? test.Id == Id : false;
+        }
+
+        public override int GetHashCode() => Id.GetHashCode();
     }
 
     public class MyFolderTree : Query<MyFolderTreeResult>, ITestableQuery

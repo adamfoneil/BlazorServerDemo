@@ -5,28 +5,114 @@
 <p>Use folders to group your work items in ways that make sense to your organization.</p>
 <p>A typical hierarchy might be <strong>Teams</strong> / <strong>Applications</strong> / <strong>Projects</strong></p>
 
+<ErrorMessage @ref="error"/>
+
 @if (AllFolders != null)
 {
     var root = GetRoot();
     <RadzenTree Data="AllFolders" Expand="@(args => OnExpand(args))">
         <RadzenTreeItem Value="@root" Text="@root.Name" HasChildren="@HasChildren(root)"/>
     </RadzenTree>
+    
+    <RadzenGrid Data="AllFolders" @ref="folderGrid" RowUpdate="OnRowUpdate" TItem="MyFolderTreeResult">
+        <Columns>
+            <RadzenGridColumn TItem="MyFolderTreeResult" Property="FullPath">
+                <HeaderTemplate>
+                    Folder Path
+                </HeaderTemplate>
+                <EditTemplate Context="folder">
+                    <RadzenTextBox @bind-Value="folder.FullPath" />
+                </EditTemplate>
+            </RadzenGridColumn>
+            <RadzenGridColumn TItem="MyFolderTreeResult">
+            <Template Context="folder">
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="edit" Click="@(args => folderGrid.EditRow(folder))"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Click="@(args => DeleteRow(folder))"/>
+            </Template>
+            <EditTemplate Context="folder">
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="save" Click="@((args) => folderGrid.UpdateRow(folder))"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="cancel" Click="@((args) => folderGrid.CancelEditRow(folder))"/>                    
+            </EditTemplate>
+        </RadzenGridColumn>
+        </Columns>
+    </RadzenGrid>
 }
+
+<EditForm Model="createFolder" OnSubmit="CreateFolderSubmit">
+    <div class="row">
+        <div class="form-group">
+            <label>Create Folder:</label>
+            <InputText @bind-Value="createFolder.FullPath" class="form-control" required="required" placeholder="folder path"/>                
+        </div>    
+    </div>
+    <div class="row">
+        <button class="btn btn-dark">Create Folder</button>
+    </div>
+</EditForm>
+
 
 @code {
     List<MyFolderTreeResult> AllFolders;
+    RadzenGrid<MyFolderTreeResult> folderGrid;
+    ErrorMessage error;
+    FolderForm createFolder = new FolderForm();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
+        await RefreshListAsync();
+    }
+
+    async Task RefreshListAsync()
+    {
         AllFolders = (await Data.QueryAsync(new MyFolderTree()
         {
             WorkspaceId = await Data.GetWorkspaceIdAsync()
         })).ToList();
     }
 
+    async Task CreateFolderSubmit()
+    {
+        var folderNames = createFolder.FullPath
+            .Split(new char[] { '/', '\\', '.' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(s => s.Trim());
+
+        int parentId = (await Data.GetWorkspaceIdAsync()) * -1;
+        using (var cn = Data.GetConnection())
+        {
+            foreach (var name in folderNames)
+            {
+                int folderId = await Data.MergeAsync(new Folder()
+                {
+                    ParentId = parentId,
+                    Name = name
+                });
+
+                parentId = folderId;
+            }
+        }
+
+        await RefreshListAsync();
+    }
+
+    async Task OnRowUpdate(MyFolderTreeResult row)
+    {
+
+    }
+
+    async Task DeleteRow(MyFolderTreeResult row) => await Data.DeleteAsync(row.ToFolder(), row.Id,
+        (exc) => error.Message = exc.Message,
+        (row) => AllFolders.Remove(GetMyFolderTreeResult(row)));
+
     MyFolderTreeResult GetRoot() => AllFolders.Single(f => f.Id < 0);
+
+    MyFolderTreeResult GetMyFolderTreeResult(Folder folder) => new MyFolderTreeResult()
+    {
+        ParentId = folder.ParentId,
+        Name = folder.Name,
+        Id = folder.Id
+    };
 
     bool HasChildren(MyFolderTreeResult folder) => AllFolders.Any(f => f.ParentId == folder.Id);
 
@@ -44,4 +130,9 @@
         var folder = context.Value as MyFolderTreeResult;
         builder.AddContent(1, folder.Name);
     };
+
+    class FolderForm
+    {
+        public string FullPath { get; set; }
+    }
 }
