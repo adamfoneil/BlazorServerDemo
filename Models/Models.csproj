@@ -5,8 +5,33 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Data\Activity.cs" Link="Activity.cs" />
+    <Compile Include="..\Data\CloseReason.cs" Link="CloseReason.cs" />
+    <Compile Include="..\Data\Conventions\AppTable.cs" Link="Conventions\AppTable.cs" />
+    <Compile Include="..\Data\Conventions\BaseTable.cs" Link="Conventions\BaseTable.cs" />
+    <Compile Include="..\Data\Folder.cs" Link="Folder.cs" />
+    <Compile Include="..\Data\FolderLevel.cs" Link="FolderLevel.cs" />
+    <Compile Include="..\Data\HandOff.cs" Link="HandOff.cs" />
+    <Compile Include="..\Data\Interfaces\IBody.cs" Link="Interfaces\IBody.cs" />
+    <Compile Include="..\Data\IterationSchedule.cs" Link="IterationSchedule.cs" />
+    <Compile Include="..\Data\Label.cs" Link="Label.cs" />
+    <Compile Include="..\Data\UserProfile.cs" Link="UserProfile.cs" />
+    <Compile Include="..\Data\WorkItem.cs" Link="WorkItem.cs" />
+    <Compile Include="..\Data\WorkItemActivity.cs" Link="WorkItemActivity.cs" />
+    <Compile Include="..\Data\WorkItemLabel.cs" Link="WorkItemLabel.cs" />
+    <Compile Include="..\Data\WorkItemRequirements.cs" Link="WorkItemRequirements.cs" />
+    <Compile Include="..\Data\Workspace.cs" Link="Workspace.cs" />
+    <Compile Include="..\Data\WorkspaceUser.cs" Link="WorkspaceUser.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AO.Models" Version="1.1.3" />
-    <PackageReference Include="Dapper" Version="2.0.35" />
+    <PackageReference Include="Dapper.CX.SqlServer" Version="1.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Conventions\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
 
 </Project>

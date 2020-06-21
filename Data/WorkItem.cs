@@ -1,6 +1,5 @@
 ﻿using AO.Models;
 using Models.Conventions;
-using Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models
