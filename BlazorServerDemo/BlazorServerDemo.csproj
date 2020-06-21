@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Components\EditableLabel.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Resources\BlazorServerDemo.zip" />
   </ItemGroup>
 

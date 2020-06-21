@@ -106,7 +106,15 @@
 
     async Task DeleteRow(MyFolderTreeResult row) => await Data.DeleteAsync(row.ToFolder(), row.Id,
         (exc) => error.Message = exc.Message,
-        (row) => AllFolders.Remove(GetMyFolderTreeResult(row)));
+        (row) =>
+        {
+            AllFolders.Remove(GetMyFolderTreeResult(row));
+            // this next part doesn't work because ChildFolderIds isn't available at this scope
+            foreach (var id in row.ChildFolderIds)
+            {
+                AllFolders.Remove(new MyFolderTreeResult() { Id = id });
+            }
+        });
 
     MyFolderTreeResult GetRoot() => AllFolders.Single(f => f.Id < 0);
 
