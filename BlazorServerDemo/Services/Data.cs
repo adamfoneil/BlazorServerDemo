@@ -91,6 +91,20 @@ namespace BlazorServerDemo.Services
             return await TrySaveAsync(model, user: _userProfile);
         }
 
+        public async Task DeleteAsync<TModel>(TModel model, Action<Exception> onException, Action<TModel> onSuccess = null)
+        {
+            try
+            {
+                if (_userProfile is null) _userProfile = await GetUserProfileAsync();
+                await DeleteAsync(model, user: _userProfile);
+                onSuccess?.Invoke(model);
+            }
+            catch (Exception exc)
+            {
+                onException.Invoke(exc);
+            }
+        }
+
         public async Task DeleteAsync<TModel>(TModel model, int id, Action<Exception> onException, Action<TModel> onSuccess = null)
         {
             try
