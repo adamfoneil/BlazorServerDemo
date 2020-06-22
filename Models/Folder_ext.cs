@@ -9,6 +9,11 @@ namespace Models
 {
     public partial class Folder : ITrigger
     {
+        /// <summary>
+        /// set during a delete operation to capture child folders that were also deleted
+        /// </summary>
+        public IEnumerable<int> ChildFolderIds { get; private set; }
+
         public async Task RowDeletedAsync(IDbConnection connection, IDbTransaction txn = null)
         {
             var childFolders = new List<int>();

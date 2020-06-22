@@ -31,10 +31,5 @@ namespace Models
 
         [MaxLength(255)]
         public string Description { get; set; }
-
-        /// <summary>
-        /// set during a delete operation to capture child folders that were also deleted
-        /// </summary>
-        public IEnumerable<int> ChildFolderIds { get; private set; }        
     }
 }
