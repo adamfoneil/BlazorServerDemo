@@ -11,7 +11,8 @@ LocalDb.CreateFromResourceAsync(Assembly.GetExecutingAssembly(), "BlazorServerDe
 
 ## Solution architecture
 - [BlazorServerDemo](https://github.com/adamfoneil/BlazorServerDemo/tree/master/BlazorServerDemo) is the app itself
-- [Models](https://github.com/adamfoneil/BlazorServerDemo/tree/master/Models) has model classes
+- [Data](https://github.com/adamfoneil/BlazorServerDemo/tree/master/Data) has low-level model classes with no other dependencies
+- [Models](https://github.com/adamfoneil/BlazorServerDemo/tree/master/Models) uses classes linked from Data project to add business logic leveraging `AO.Models` interfaces. This layer has a Dapper dependency
 - [CmdConsole](https://github.com/adamfoneil/BlazorServerDemo/tree/master/CmdConsole) was just a little thing to create the database zip file
 - [Testing](https://github.com/adamfoneil/BlazorServerDemo/tree/master/Testing) is what it sounds like, but as of now just has [QueryTests](https://github.com/adamfoneil/BlazorServerDemo/blob/master/Testing/QueryTests.cs).
 
