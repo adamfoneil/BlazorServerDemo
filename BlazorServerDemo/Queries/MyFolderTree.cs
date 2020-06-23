@@ -14,7 +14,7 @@ namespace BlazorServerDemo.Queries
         public string Name { get; set; }
         public int Level { get; set; }
         public int ParentId { get; set; }
-        public string FullPath { get; set; }
+        public string FullPath { get; set; }        
 
         public Folder ToFolder() => new Folder()
         {
@@ -34,23 +34,26 @@ namespace BlazorServerDemo.Queries
 
     public class MyFolderTree : Query<MyFolderTreeResult>, ITestableQuery
     {
+        public const string RecursiveQuery = 
+            @"SELECT 
+                [ws].[Id] * -1 AS [Id], [ws].[Name], 0 AS [Level], 0 AS [ParentId], CAST([ws].[Name] as varchar(255)) AS [FullPath]
+            FROM 
+                [dbo].[Workspace] [ws]  
+            WHERE
+                [ws].[Id]=@workspaceId
+
+            UNION ALL
+
+            SELECT
+                [f].[Id], [f].[Name], [t].[Level]+1 AS [Level], [f].[ParentId], CAST(CONCAT([t].[FullPath], ' / ', [f].[Name]) as varchar(255)) AS [FullPath]
+            FROM 
+                [dbo].[Folder] [f]                    
+                INNER JOIN [tree] [t] ON [f].[ParentId]=[t].[Id]";
+
         public MyFolderTree() : base(
-            @"WITH [tree] AS (
-                SELECT 
-                    [ws].[Id] * -1 AS [Id], [ws].[Name], 0 AS [Level], 0 AS [ParentId], CAST([ws].[Name] as varchar(255)) AS [FullPath]
-                FROM 
-                    [dbo].[Workspace] [ws]  
-                WHERE
-                    [ws].[Id]=@workspaceId
-
-                UNION ALL
-
-                SELECT
-                    [f].[Id], [f].[Name], [t].[Level]+1 AS [Level], [f].[ParentId], CAST(CONCAT([t].[FullPath], ' / ', [f].[Name]) as varchar(255)) AS [FullPath]
-                FROM 
-                    [dbo].[Folder] [f]                    
-                    INNER JOIN [tree] [t] ON [f].[ParentId]=[t].[Id]                
-            ) SELECT * FROM [tree] ORDER BY [Level], [Name]")
+            $@"WITH [tree] AS (
+                {RecursiveQuery}
+            ) SELECT * FROM [tree] ORDER BY [FullPath]")
         {
         }
 

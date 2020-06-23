@@ -36,5 +36,8 @@ namespace Testing
 
         [TestMethod]
         public void MyFolderTreeQuery() => QueryHelper.Test<MyFolderTree>(GetConnection);
+        
+        [TestMethod]
+        public void CountWorkItemsByFolderQuery() => QueryHelper.Test<CountWorkItemsByFolder>(GetConnection);
     }
 }
