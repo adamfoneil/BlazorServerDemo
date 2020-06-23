@@ -14,7 +14,7 @@ namespace BlazorServerDemo.Queries
         public string Name { get; set; }
         public int Level { get; set; }
         public int ParentId { get; set; }
-        public string FullPath { get; set; }        
+        public string FullPath { get; set; }
 
         public Folder ToFolder() => new Folder()
         {
@@ -34,7 +34,7 @@ namespace BlazorServerDemo.Queries
 
     public class MyFolderTree : Query<MyFolderTreeResult>, ITestableQuery
     {
-        public const string RecursiveQuery = 
+        public const string RecursiveQuery =
             @"SELECT 
                 [ws].[Id] * -1 AS [Id], [ws].[Name], 0 AS [Level], 0 AS [ParentId], CAST([ws].[Name] as varchar(255)) AS [FullPath]
             FROM 

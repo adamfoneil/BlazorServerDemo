@@ -9,7 +9,7 @@ namespace Models
         [Key]
         [References(typeof(WorkItem))]
         public int WorkItemId { get; set; }
-        
+
         [Key]
         [References(typeof(Label))]
         public int LabelId { get; set; }

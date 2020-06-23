@@ -28,9 +28,9 @@ namespace BlazorServerDemo.Services
         public async Task<Workspace> GetWorkspaceAsync()
         {
             var wsId = await GetWorkspaceIdAsync();
-            return (wsId != 0) ? await GetAsync<Workspace>(wsId) : default;            
+            return (wsId != 0) ? await GetAsync<Workspace>(wsId) : default;
         }
-        
+
         public async Task<UserProfile> GetUserProfileAsync()
         {
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
@@ -61,7 +61,7 @@ namespace BlazorServerDemo.Services
             using (var cn = GetConnection())
             {
                 return await new MyWorkspaces() { UserId = profile.UserId }.ExecuteAsync(cn);
-            }            
+            }
         }
 
         public async Task<int> SaveAsync<TModel>(TModel model)

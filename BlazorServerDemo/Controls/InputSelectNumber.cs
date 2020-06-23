@@ -36,7 +36,7 @@ namespace BlazorServerDemo.Controls
             else
             {
                 return base.TryParseValueFromString(value, out result, out validationErrorMessage);
-            }            
+            }
         }
     }
 }
