@@ -1,0 +1,41 @@
+﻿@page "/WorkItem"
+@inject Data Data
+
+<ErrorMessage @ref="error"/>
+
+<EditForm Model="WorkItemRecord" OnSubmit="WorkItemOnSubmit">
+    <div class="form-group">
+        <label>Folder:</label>
+        <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.FolderId" Data="Folders" TextProperty="Text" ValueProperty="Value"/>
+    </div>
+
+    <div class="form-group">
+        <label>Title:</label>
+        <RadzenTextBox @bind-Value="WorkItemRecord.Title"/>
+    </div>
+
+    <div class="form-group">
+        <label>Iteration:</label>
+        <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.Iteration" Data="Iterations" TextProperty="Text" ValueProperty="Value"/>
+    </div>
+
+</EditForm>
+
+
+@code {        
+    ErrorMessage error;
+    int WorkspaceId;
+    Models.WorkItem WorkItemRecord = new Models.WorkItem();
+    IEnumerable<SelectListItem> Folders;
+    IEnumerable<SelectListItem> Iterations;
+
+    async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, (exc) => error.Message = exc.Message);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        WorkspaceId = await Data.GetWorkspaceIdAsync();
+        Folders = await Data.QuerySelectListAsync<FolderSelect>(q => q.WorkspaceId = WorkspaceId);
+    }
+}

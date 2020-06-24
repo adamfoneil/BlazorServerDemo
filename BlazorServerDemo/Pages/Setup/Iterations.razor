@@ -30,15 +30,15 @@
                 <RadzenTextBox @bind-Value="schedule.Name" class="form-control"/>
             </EditTemplate>
         </RadzenGridColumn>
-        <RadzenGridColumn TItem="IterationSchedule" Property="SeedDate">
+        <RadzenGridColumn TItem="IterationSchedule" Property="StartDay">
             <HeaderTemplate>
-                Seed Date
+                Start Day
             </HeaderTemplate>
             <EditTemplate Context="schedule">
-                <RadzenDatePicker @bind-Value="schedule.SeedDate" DateFormat="M/d/yy"/>
+                <RadzenDropDown TValue="DayOfWeek" @bind-Value="schedule.StartDay" Data="DayOptions" ValueProperty="Key" TextProperty="Value"/>
             </EditTemplate>
             <Template Context="schedule">
-                <span>@schedule.SeedDate.ToString("ddd M/d/yy")</span>
+                <span>@schedule.StartDay.ToString()</span>
             </Template>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="IterationSchedule" Property="WorkingDays">
@@ -94,8 +94,8 @@
                 <InputText @bind-Value="CreateSchedule.Name" class="form-control" required="required" placeholder="schedule name"/>                
             </div>    
             <div class="form-group">
-                <label>Seed Date:</label>
-                <RadzenDatePicker @bind-Value="CreateSchedule.SeedDate" required="required"/>
+                <label>Start Day:</label>
+                <RadzenDropDown TValue="DayOfWeek" @bind-Value="CreateSchedule.StartDay" Data="DayOptions" ValueProperty="Key" TextProperty="Value"/>
                 <button class="btn btn-dark">Create Schedule</button>
             </div>    
         </div>
@@ -109,6 +109,7 @@
     List<IterationSchedule> AllSchedules = new List<IterationSchedule>();
     FilterActive activeFilter;
     IterationSchedule CreateSchedule = new IterationSchedule();
+    Dictionary<DayOfWeek, string> DayOptions = new Dictionary<DayOfWeek, string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -121,6 +122,8 @@
         await RefreshListAsync();
 
         if (!CurrentSchedule?.IsActive ?? false) AllSchedules.Add(CurrentSchedule);
+
+        DayOptions = Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToDictionary(dw => dw, dw => dw.ToString());
     }
 
     async Task OnFilterChanged() => await RefreshListAsync();
@@ -134,7 +137,7 @@
         })).ToList();
     }
 
-    async Task OnRowUpdate(IterationSchedule iterationSchedule) => await Data.SaveAsync(iterationSchedule, (exc) => error.Message = exc.Message);
+    async Task OnRowUpdate(IterationSchedule iterationSchedule) => await Data.SaveAsync(iterationSchedule, error);
 
     async Task DeleteRow(IterationSchedule schedule) => await Data.DeleteAsync<IterationSchedule>(schedule, schedule.Id,
         (exc) => error.Message = exc.Message,

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
-    public class IterationSchedule : BaseTable
+    public partial class IterationSchedule : BaseTable
     {
         [Key]
         [References(typeof(Workspace))]
@@ -15,7 +15,7 @@ namespace Models
         [MaxLength(50)]
         public string Name { get; set; }
 
-        public DateTime SeedDate { get; set; }
+        public DayOfWeek StartDay { get; set; }
 
         /// <summary>
         /// number of working days in a sprint (default 2x Mon -> Fri)
