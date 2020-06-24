@@ -3,7 +3,7 @@ I never made peace with JavaScript. This left me in a really awkward position wh
 It turns out I am, in effect, rebuilding my [Ginseng](https://github.com/adamfoneil/Ginseng8) app. I don't expect to get my team to use this new Blazor version, but I *am* going to see how far I can get. I'm incorporating some lessons and feedback from the last iteration, and I'm giving serious thought to all aspects of it. I'm treating this as a real application, in other words.
 
 ## Cloning and running it
-If you clone the repo, uncomment [this line](https://github.com/adamfoneil/BlazorServerDemo/blob/master/BlazorServerDemo/Startup.cs#L38), and run the app to create the database:
+If you clone the repo, uncomment [this line](https://github.com/adamfoneil/BlazorServerDemo/blob/master/BlazorServerDemo/Startup.cs#L29), and run the app to create the database:
 
 ```csharp
 LocalDb.CreateFromResourceAsync(Assembly.GetExecutingAssembly(), "BlazorServerDemo.Resources.BlazorServerDemo.zip", "BlazorServerDemo").Wait();
@@ -20,3 +20,4 @@ LocalDb.CreateFromResourceAsync(Assembly.GetExecutingAssembly(), "BlazorServerDe
 As I get around to making demo videos, I'll link them below:
 - 6/17/20: a few simple Crud pages: https://1drv.ms/u/s!AvguHRnyJtWMlvsmlGydpZqevIAyoQ?e=0LteG5
 - 6/17/20: data access walkthrough: https://1drv.ms/v/s!AvguHRnyJtWMlvsnktp5jE5nxDXHRQ?e=QOlNtr
+- 6/23/20: recursive folder Crud page: https://1drv.ms/v/s!AvguHRnyJtWMlvspIciw3otxGrFCMQ?e=FLnNBZ
