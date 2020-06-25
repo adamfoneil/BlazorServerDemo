@@ -7,16 +7,13 @@
 
 <ErrorMessage @ref="error"/>
 
-<div class="row">
-    <label>Current Schedule: </label>
-    <select name="CurrentScheduleId" class="form-control ml-2">
-        <option></option>
-        @foreach (var item in AllSchedules)
-        {
-            <option value="@item.Id">@item.Name</option>
-        }
-    </select>
-</div>
+<EditForm Model="CurrentWorkspace" OnSubmit="SetSchedule">
+    <div class="row">
+        <label>Current Schedule: </label>
+        <RadzenDropDown TValue="int?" Data="AllSchedules" ValueProperty="Id" TextProperty="Name" @bind-Value="CurrentWorkspace.IterationScheduleId" AllowClear="true"/>
+        <button class="btn btn-primary ml-2" type="submit">Save</button>
+    </div>    
+</EditForm>
 
 <FilterActive @ref="activeFilter" FilterChanged="OnFilterChanged"/>
 
@@ -94,7 +91,7 @@
                 <InputText @bind-Value="CreateSchedule.Name" class="form-control" required="required" placeholder="schedule name"/>                
             </div>    
             <div class="form-group">
-                <label>Seed Date:</label>
+                <label>Start Date:</label>
                 <RadzenDatePicker @bind-Value="CreateSchedule.StartDate" required="required"/>
                 <button class="btn btn-dark">Create Schedule</button>
             </div>    
@@ -106,6 +103,7 @@
     ErrorMessage error;
     RadzenGrid<IterationSchedule> IterationGrid;
     IterationSchedule CurrentSchedule = new IterationSchedule();
+    Workspace CurrentWorkspace = new Workspace();
     List<IterationSchedule> AllSchedules = new List<IterationSchedule>();
     FilterActive activeFilter;
     IterationSchedule CreateSchedule = new IterationSchedule();
@@ -115,16 +113,19 @@
     {
         await base.OnInitializedAsync();
 
-        CreateSchedule = new IterationSchedule() { WorkspaceId = await Data.GetWorkspaceIdAsync() };
+        CurrentWorkspace = await Data.GetWorkspaceAsync();
+        CreateSchedule = new IterationSchedule() { WorkspaceId = CurrentWorkspace.Id };
 
-        var scheduleId = (await Data.GetWorkspaceAsync())?.IterationScheduleId ?? 0;
+        var scheduleId = CurrentWorkspace?.IterationScheduleId ?? 0;
         CurrentSchedule = await Data.GetAsync<IterationSchedule>(scheduleId);
         await RefreshListAsync();
 
         if (!CurrentSchedule?.IsActive ?? false) AllSchedules.Add(CurrentSchedule);
 
-        DayOptions = Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToDictionary(dw => dw, dw => dw.ToString());
+        //DayOptions = Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToDictionary(dw => dw, dw => dw.ToString());
     }
+
+    async Task SetSchedule() => await Data.SaveAsync(CurrentWorkspace, error);
 
     async Task OnFilterChanged() => await RefreshListAsync();
 

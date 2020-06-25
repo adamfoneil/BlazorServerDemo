@@ -144,7 +144,7 @@ namespace BlazorServerDemo.Services
             }
         }
 
-        public async Task<IEnumerable<SelectListItem>> QuerySelectListAsync<TQuery>(Action<TQuery> setParams = null) where TQuery : Query<SelectListItem>, new()
+        public async Task<IEnumerable<KeyValuePair<int, string>>> QuerySelectListAsync<TQuery>(Action<TQuery> setParams = null) where TQuery : Query<KeyValuePair<int, string>>, new()
         {
             using (var cn = GetConnection())
             {

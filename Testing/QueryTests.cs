@@ -1,4 +1,5 @@
 using BlazorServerDemo.Queries;
+using BlazorServerDemo.Queries.SelectLists;
 using Dapper.QX;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -39,5 +40,8 @@ namespace Testing
         
         [TestMethod]
         public void CountWorkItemsByFolderQuery() => QueryHelper.Test<CountWorkItemsByFolder>(GetConnection);
+
+        [TestMethod]
+        public void FolderSelectQuery() => QueryHelper.Test<FolderSelect>(GetConnection);
     }
 }

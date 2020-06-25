@@ -6,7 +6,7 @@
 <EditForm Model="WorkItemRecord" OnSubmit="WorkItemOnSubmit">
     <div class="form-group">
         <label>Folder:</label>
-        <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.FolderId" Data="Folders" TextProperty="Text" ValueProperty="Value"/>
+        <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.FolderId" Data="Folders" TextProperty="Value" ValueProperty="Key"/>
     </div>
 
     <div class="form-group">
@@ -16,7 +16,7 @@
 
     <div class="form-group">
         <label>Iteration:</label>
-        <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.Iteration" Data="Iterations" TextProperty="Text" ValueProperty="Value"/>
+        <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.Iteration" Data="Iterations" TextProperty="Value" ValueProperty="Key"/>
     </div>
 
 </EditForm>
@@ -26,8 +26,8 @@
     ErrorMessage error;
     int WorkspaceId;
     Models.WorkItem WorkItemRecord = new Models.WorkItem();
-    IEnumerable<SelectListItem> Folders;
-    IEnumerable<SelectListItem> Iterations;
+    IEnumerable<KeyValuePair<int, string>> Folders;
+    IEnumerable<KeyValuePair<int, string>> Iterations;
 
     async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, (exc) => error.Message = exc.Message);
 
@@ -37,5 +37,6 @@
 
         WorkspaceId = await Data.GetWorkspaceIdAsync();
         Folders = await Data.QuerySelectListAsync<FolderSelect>(q => q.WorkspaceId = WorkspaceId);
+        Iterations = await Data.GetIterationsAsync();
     }
 }
