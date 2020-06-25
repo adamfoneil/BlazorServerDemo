@@ -15,7 +15,7 @@ namespace Models
         [MaxLength(50)]
         public string Name { get; set; }
 
-        public DateTime SeedDate { get; set; }
+        public DateTime StartDate { get; set; }
 
         /// <summary>
         /// number of working days in a sprint (default 2x Mon -> Fri)

@@ -35,10 +35,10 @@
                 Seed Date
             </HeaderTemplate>
             <EditTemplate Context="schedule">
-                <RadzenDatePicker @bind-Value="schedule.SeedDate" DateFormat="M/d/yy"/>
+                <RadzenDatePicker @bind-Value="schedule.StartDate" DateFormat="M/d/yy"/>
             </EditTemplate>
             <Template Context="schedule">
-                <span>@schedule.SeedDate.ToString("ddd M/d/yy")</span>
+                <span>@schedule.StartDate.ToString("ddd M/d/yy")</span>
             </Template>
         </RadzenGridColumn>
         <RadzenGridColumn TItem="IterationSchedule" Property="WorkingDays">
@@ -95,7 +95,7 @@
             </div>    
             <div class="form-group">
                 <label>Seed Date:</label>
-                <RadzenDatePicker @bind-Value="CreateSchedule.SeedDate" required="required"/>
+                <RadzenDatePicker @bind-Value="CreateSchedule.StartDate" required="required"/>
                 <button class="btn btn-dark">Create Schedule</button>
             </div>    
         </div>
