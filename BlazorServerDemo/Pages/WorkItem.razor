@@ -36,10 +36,10 @@
     <div class="row">
         <label>Labels:</label>
         <RadzenCheckBoxList TValue="int" Orientation="Orientation.Horizontal" Change="@(value => SelectedLabelChange(value))" @ref="LabelOptions">
-            <Items>
+            <Items>                                     
                 @foreach (var lbl in AllLabels)
-                {
-                    <RadzenCheckBoxListItem Value="lbl.Id" Text="@lbl.Name"/>
+                {                                        
+                    <RadzenCheckBoxListItem Value="lbl.Id" Text="@lbl.Name" @ref="AddCheckboxRef"/>                    
                 }
             </Items>
         </RadzenCheckBoxList>
@@ -57,6 +57,10 @@
     HashSet<Label> SelectedLabels = new HashSet<Label>();
     IEnumerable<Label> AllLabels = Enumerable.Empty<Label>();
     RadzenCheckBoxList<int> LabelOptions;
+    List<RadzenCheckBoxListItem<int>> LabelCheckboxItems = new List<RadzenCheckBoxListItem<int>>();
+
+    // thanks to https://stackoverflow.com/a/60083369/2023653
+    RadzenCheckBoxListItem<int> AddCheckboxRef { set { LabelCheckboxItems.Add(value); } }
 
     async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, error);
 
@@ -83,11 +87,27 @@
         SelectedLabels.Remove(new Label() { Id = labelId });
     }
 
-    void SelectedLabelChange(IEnumerable<int> selectedValues)
-    {        
+    async Task SelectedLabelChange(IEnumerable<int> selectedValues)
+    {
+        var labelDictionary = AllLabels.ToDictionary(row => row.Id);
+
         foreach (var id in selectedValues)
         {
+            var checkbox = LabelCheckboxItems.Single(chk => chk.Value == id);
+            var label = labelDictionary[id];
+            await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
+            {
+                {  "Style", $"background-color:{label.BackColor};color:{label.TextColor}" }
+            }));
+        }
 
+        foreach (var kp in labelDictionary.Where(kp => !selectedValues.Contains(kp.Key)))
+        {
+            var checkbox = LabelCheckboxItems.Single(chk => chk.Value == kp.Key);
+            await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
+            {
+                {  "Style", $"background-color:auto;color:auto" }
+            }));
         }
     }
 }
