@@ -16,9 +16,34 @@
 
     <div class="row">
         <label>Iteration:</label>
-        <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.Iteration" Data="Iterations" TextProperty="Value" ValueProperty="Key"/>
+        <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.Iteration" Data="Iterations" TextProperty="Value" ValueProperty="Key"/>        
     </div>
 
+    <div class="row">
+        <label>Labels:</label>
+        <RadzenDropDown TValue="int" Data="Labels" TextProperty="Value" ValueProperty="Key" Change="@(value => LabelOnChange(value))"/>
+        <RadzenCard>
+            @foreach (var lbl in SelectedLabels)
+            {
+                <span class="badge" style="background-color:@lbl.BackColor;color:@lbl.TextColor">
+                    @lbl.Name                    
+                    <a class="dismiss" @onclick="(args) => RemoveLabel(args, lbl.Id)">🗙</a>
+                </span>
+            }
+        </RadzenCard>
+    </div>
+
+    <div class="row">
+        <label>Labels:</label>
+        <RadzenCheckBoxList TValue="int" Orientation="Orientation.Horizontal" Change="@(value => SelectedLabelChange(value))" @ref="LabelOptions">
+            <Items>
+                @foreach (var lbl in AllLabels)
+                {
+                    <RadzenCheckBoxListItem Value="lbl.Id" Text="@lbl.Name"/>
+                }
+            </Items>
+        </RadzenCheckBoxList>
+    </div>
 </EditForm>
 
 
@@ -28,8 +53,12 @@
     Models.WorkItem WorkItemRecord = new Models.WorkItem();
     IEnumerable<KeyValuePair<int, string>> Folders;
     IEnumerable<KeyValuePair<int, string>> Iterations;
+    IEnumerable<KeyValuePair<int, string>> Labels;
+    HashSet<Label> SelectedLabels = new HashSet<Label>();
+    IEnumerable<Label> AllLabels = Enumerable.Empty<Label>();
+    RadzenCheckBoxList<int> LabelOptions;
 
-    async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, (exc) => error.Message = exc.Message);
+    async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, error);
 
     protected override async Task OnInitializedAsync()
     {
@@ -38,5 +67,27 @@
         WorkspaceId = await Data.GetWorkspaceIdAsync();
         Folders = await Data.QuerySelectListAsync<FolderSelect>(q => q.WorkspaceId = WorkspaceId);
         Iterations = await Data.GetIterationsAsync();
+        Labels = await Data.QuerySelectListAsync<LabelSelect>(q => q.WorkspaceId = WorkspaceId);
+        AllLabels = await Data.QueryAsync(new MyLabels() { WorkspaceId = WorkspaceId, IsActive = true });
+    }
+
+    async Task LabelOnChange(object value)
+    {
+        int labelId = (int)value;
+        var lbl = await Data.GetAsync<Label>(labelId);
+        if (lbl != null) SelectedLabels.Add(lbl);
+    }
+
+    void RemoveLabel(MouseEventArgs args, int labelId)
+    {
+        SelectedLabels.Remove(new Label() { Id = labelId });
+    }
+
+    void SelectedLabelChange(IEnumerable<int> selectedValues)
+    {        
+        foreach (var id in selectedValues)
+        {
+
+        }
     }
 }

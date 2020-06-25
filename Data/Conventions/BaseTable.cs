@@ -41,5 +41,16 @@ namespace Models.Conventions
                     break;
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            var test = obj as BaseTable;
+            return (test != null) ? test.Id == Id : false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 }

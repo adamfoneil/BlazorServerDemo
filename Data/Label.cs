@@ -1,11 +1,10 @@
 ﻿using AO.Models;
 using Models.Conventions;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
-    public class Label : BaseTable
+    public partial class Label : BaseTable
     {
         [Key]
         [References(typeof(Workspace))]
@@ -24,8 +23,5 @@ namespace Models
         public string TextColor { get; set; }
 
         public bool IsActive { get; set; } = true;
-
-        [NotMapped]
-        public int OpenWorkItems { get; set; }
     }
 }
