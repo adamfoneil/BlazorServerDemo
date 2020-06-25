@@ -25,13 +25,13 @@ namespace BlazorServerDemo.Services
             string dateFormat = "M/d";
             do
             {
-                DateTime endDate = seedDate.AddDays(schedule.TotalDays);
+                DateTime endDate = seedDate.AddDays(schedule.TotalDays - 1);
                 if (endDate.Year > seedDate.Year) dateFormat = "M/d/yy";
                 string name = $"{getName(index)} - {endDate.ToString(dateFormat)}";
                 yield return new KeyValuePair<int, string>(index, name);
                 index++;
-                seedDate = endDate;
-            } while (index <= count) ;            
+                seedDate = endDate.AddDays(1);
+            } while (index <= count);
 
             string getName(int index)
             {

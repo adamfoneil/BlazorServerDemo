@@ -4,17 +4,17 @@
 <ErrorMessage @ref="error"/>
 
 <EditForm Model="WorkItemRecord" OnSubmit="WorkItemOnSubmit">
-    <div class="form-group">
+    <div class="row">    
         <label>Folder:</label>
-        <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.FolderId" Data="Folders" TextProperty="Value" ValueProperty="Key"/>
+        <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.FolderId" Data="Folders" TextProperty="Value" ValueProperty="Key"/>    
     </div>
 
-    <div class="form-group">
+    <div class="row">
         <label>Title:</label>
         <RadzenTextBox @bind-Value="WorkItemRecord.Title"/>
     </div>
 
-    <div class="form-group">
+    <div class="row">
         <label>Iteration:</label>
         <RadzenDropDown TValue="int" @bind-Value="WorkItemRecord.Iteration" Data="Iterations" TextProperty="Value" ValueProperty="Key"/>
     </div>
