@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
-    public class IterationSchedule : BaseTable
+    public partial class IterationSchedule : BaseTable
     {
         [Key]
         [References(typeof(Workspace))]

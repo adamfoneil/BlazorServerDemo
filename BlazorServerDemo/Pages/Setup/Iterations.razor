@@ -30,9 +30,9 @@
                 <RadzenTextBox @bind-Value="schedule.Name" class="form-control"/>
             </EditTemplate>
         </RadzenGridColumn>
-        <RadzenGridColumn TItem="IterationSchedule" Property="SeedDate">
+        <RadzenGridColumn TItem="IterationSchedule" Property="StartDay">
             <HeaderTemplate>
-                Seed Date
+                Start Day
             </HeaderTemplate>
             <EditTemplate Context="schedule">
                 <RadzenDatePicker @bind-Value="schedule.StartDate" DateFormat="M/d/yy"/>
@@ -109,6 +109,7 @@
     List<IterationSchedule> AllSchedules = new List<IterationSchedule>();
     FilterActive activeFilter;
     IterationSchedule CreateSchedule = new IterationSchedule();
+    Dictionary<DayOfWeek, string> DayOptions = new Dictionary<DayOfWeek, string>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -121,6 +122,8 @@
         await RefreshListAsync();
 
         if (!CurrentSchedule?.IsActive ?? false) AllSchedules.Add(CurrentSchedule);
+
+        DayOptions = Enum.GetValues(typeof(DayOfWeek)).OfType<DayOfWeek>().ToDictionary(dw => dw, dw => dw.ToString());
     }
 
     async Task OnFilterChanged() => await RefreshListAsync();
@@ -134,7 +137,7 @@
         })).ToList();
     }
 
-    async Task OnRowUpdate(IterationSchedule iterationSchedule) => await Data.SaveAsync(iterationSchedule, (exc) => error.Message = exc.Message);
+    async Task OnRowUpdate(IterationSchedule iterationSchedule) => await Data.SaveAsync(iterationSchedule, error);
 
     async Task DeleteRow(IterationSchedule schedule) => await Data.DeleteAsync<IterationSchedule>(schedule, schedule.Id,
         (exc) => error.Message = exc.Message,

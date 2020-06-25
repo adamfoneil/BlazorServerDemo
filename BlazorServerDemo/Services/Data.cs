@@ -1,7 +1,9 @@
-﻿using BlazorServerDemo.Queries;
+﻿using BlazorServerDemo.Components;
+using BlazorServerDemo.Queries;
 using Dapper.CX.SqlServer.Services;
 using Dapper.QX;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -9,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BlazorServerDemo.Services
 {
-    public class Data : SqlServerIntCrudService
+    public partial class Data : SqlServerIntCrudService
     {
         private readonly AuthenticationStateProvider _authenticationStateProvider;
 
@@ -62,6 +64,15 @@ namespace BlazorServerDemo.Services
             {
                 return await new MyWorkspaces() { UserId = profile.UserId }.ExecuteAsync(cn);
             }
+        }
+
+        public async Task<int> SaveAsync<TModel>(TModel model, ErrorMessage errorMessage)
+        {
+            if (_userProfile is null) _userProfile = await GetUserProfileAsync();
+
+            return await SaveAsync(model,
+                (exc) => errorMessage.Message = exc.Message,
+                async () => errorMessage.Clear());
         }
 
         public async Task<int> SaveAsync<TModel>(TModel model)
@@ -129,6 +140,16 @@ namespace BlazorServerDemo.Services
         {
             using (var cn = GetConnection())
             {
+                return await query.ExecuteAsync(cn);
+            }
+        }
+
+        public async Task<IEnumerable<SelectListItem>> QuerySelectListAsync<TQuery>(Action<TQuery> setParams = null) where TQuery : Query<SelectListItem>, new()
+        {
+            using (var cn = GetConnection())
+            {
+                var query = new TQuery();
+                setParams?.Invoke(query);
                 return await query.ExecuteAsync(cn);
             }
         }
