@@ -3,6 +3,17 @@
 
 <ErrorMessage @ref="error"/>
 
+<div class="alert alert-info">
+    @if (WorkItemRecord.Number == 0)
+    {
+        <span>New work item</span>
+    }
+    else
+    {
+        <span>@WorkItemRecord.Number</span>
+    }
+</div>
+
 <EditForm Model="WorkItemRecord" OnSubmit="WorkItemOnSubmit">
     <div class="row">    
         <label>Folder:</label>
@@ -21,22 +32,8 @@
 
     <div class="row">
         <label>Labels:</label>
-        <RadzenDropDown TValue="int" Data="Labels" TextProperty="Value" ValueProperty="Key" Change="@(value => LabelOnChange(value))"/>
-        <RadzenCard>
-            @foreach (var lbl in SelectedLabels)
-            {
-                <span class="badge" style="background-color:@lbl.BackColor;color:@lbl.TextColor">
-                    @lbl.Name                    
-                    <a class="dismiss" @onclick="(args) => RemoveLabel(args, lbl.Id)">🗙</a>
-                </span>
-            }
-        </RadzenCard>
-    </div>
-
-    <div class="row">
-        <label>Labels:</label>
-        <RadzenCheckBoxList TValue="int" Orientation="Orientation.Horizontal" Change="@(value => SelectedLabelChange(value))" @ref="LabelOptions">
-            <Items>                                     
+        <RadzenCheckBoxList TValue="int" Orientation="Orientation.Horizontal" Change="@(value => SelectedLabelChange(value))" @ref="LabelOptions" @bind-Value="WorkItemRecord.SelectedLabels">
+            <Items>                           
                 @foreach (var lbl in AllLabels)
                 {                                        
                     <RadzenCheckBoxListItem Value="lbl.Id" Text="@lbl.Name" @ref="AddCheckboxRef"/>                    
@@ -44,47 +41,39 @@
             </Items>
         </RadzenCheckBoxList>
     </div>
+
+    <RadzenButton ButtonType="ButtonType.Submit" Text="Save Work Item"/>
+
+    <RadzenButton Click="NewWorkItem" Text="New Work Item"/>
 </EditForm>
 
 
 @code {        
-    ErrorMessage error;
-    int WorkspaceId;
-    Models.WorkItem WorkItemRecord = new Models.WorkItem();
-    IEnumerable<KeyValuePair<int, string>> Folders;
-    IEnumerable<KeyValuePair<int, string>> Iterations;
-    IEnumerable<KeyValuePair<int, string>> Labels;
-    HashSet<Label> SelectedLabels = new HashSet<Label>();
-    IEnumerable<Label> AllLabels = Enumerable.Empty<Label>();
-    RadzenCheckBoxList<int> LabelOptions;
-    List<RadzenCheckBoxListItem<int>> LabelCheckboxItems = new List<RadzenCheckBoxListItem<int>>();
+        ErrorMessage error;
+        int WorkspaceId;
+        Models.WorkItem WorkItemRecord = new Models.WorkItem();
+        IEnumerable<KeyValuePair<int, string>> Folders;
+        IEnumerable<KeyValuePair<int, string>> Iterations;
+        IEnumerable<KeyValuePair<int, string>> Labels;
+        IEnumerable<Label> AllLabels = Enumerable.Empty<Label>();
+        RadzenCheckBoxList<int> LabelOptions;
+        List<RadzenCheckBoxListItem<int>> LabelCheckboxItems = new List<RadzenCheckBoxListItem<int>>();
 
-    // thanks to https://stackoverflow.com/a/60083369/2023653
-    RadzenCheckBoxListItem<int> AddCheckboxRef { set { LabelCheckboxItems.Add(value); } }
+        // thanks to https://stackoverflow.com/a/60083369/2023653
+        RadzenCheckBoxListItem<int> AddCheckboxRef { set { LabelCheckboxItems.Add(value); } }
 
-    async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, error);
+        async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, error);
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         WorkspaceId = await Data.GetWorkspaceIdAsync();
+        WorkItemRecord.WorkspaceId = WorkspaceId;
         Folders = await Data.QuerySelectListAsync<FolderSelect>(q => q.WorkspaceId = WorkspaceId);
         Iterations = await Data.GetIterationsAsync();
         Labels = await Data.QuerySelectListAsync<LabelSelect>(q => q.WorkspaceId = WorkspaceId);
         AllLabels = await Data.QueryAsync(new MyLabels() { WorkspaceId = WorkspaceId, IsActive = true });
-    }
-
-    async Task LabelOnChange(object value)
-    {
-        int labelId = (int)value;
-        var lbl = await Data.GetAsync<Label>(labelId);
-        if (lbl != null) SelectedLabels.Add(lbl);
-    }
-
-    void RemoveLabel(MouseEventArgs args, int labelId)
-    {
-        SelectedLabels.Remove(new Label() { Id = labelId });
     }
 
     async Task SelectedLabelChange(IEnumerable<int> selectedValues)
@@ -109,5 +98,11 @@
                 {  "Style", $"background-color:auto;color:auto" }
             }));
         }
+    }
+
+    void NewWorkItem()
+    {
+        LabelCheckboxItems.Clear(); // prevents redundant items in checkbox item list
+        WorkItemRecord = new Models.WorkItem() { WorkspaceId = WorkspaceId };
     }
 }

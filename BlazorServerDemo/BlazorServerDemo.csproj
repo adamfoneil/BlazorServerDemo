@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper.CX.SqlServer" Version="1.1.9" />
+    <PackageReference Include="Dapper.CX.SqlServer" Version="1.1.10" />
     <PackageReference Include="Dapper.QX" Version="1.0.13" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.4" />

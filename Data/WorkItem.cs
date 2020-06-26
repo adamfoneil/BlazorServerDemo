@@ -1,16 +1,19 @@
 ﻿using AO.Models;
+using AO.Models.Enums;
 using Models.Conventions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
-    public class WorkItem : BaseTable
+    public partial class WorkItem : BaseTable
     {
         [Key]
         [References(typeof(Workspace))]
+        [SaveAction(SaveAction.Insert)]
         public int WorkspaceId { get; set; }
 
         [Key]
+        [SaveAction(SaveAction.Insert)]
         public int Number { get; set; }
 
         [References(typeof(Folder))]

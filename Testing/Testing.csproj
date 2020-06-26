@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlazorServerDemo\BlazorServerDemo.csproj" />
+    <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using Dapper.QX;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Models.Queries;
 
 namespace Testing
 {
@@ -43,5 +44,8 @@ namespace Testing
 
         [TestMethod]
         public void FolderSelectQuery() => QueryHelper.Test<FolderSelect>(GetConnection);
+
+        [TestMethod]
+        public void RebuildWorkItemLabelsQuery() => QueryHelper.Test<RebuildWorkItemLabels>(GetConnection);
     }
 }
