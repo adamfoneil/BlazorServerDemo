@@ -33,7 +33,7 @@
     <div class="row">
         <label>Labels:</label>
         <RadzenCheckBoxList TValue="int" Orientation="Orientation.Horizontal" Change="@(value => SelectedLabelChange(value))" @ref="LabelOptions" @bind-Value="WorkItemRecord.SelectedLabels">
-            <Items>                           
+            <Items>
                 @foreach (var lbl in AllLabels)
                 {                                        
                     <RadzenCheckBoxListItem Value="lbl.Id" Text="@lbl.Name" @ref="AddCheckboxRef"/>                    
@@ -60,9 +60,7 @@
 
     // thanks to https://stackoverflow.com/a/60083369/2023653
     RadzenCheckBoxListItem<int> AddCheckboxRef { set { LabelCheckboxItems.Add(value); } }
-
-    async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, error);
-
+   
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -73,6 +71,8 @@
         Iterations = await Data.GetIterationsAsync();        
         AllLabels = await Data.QueryAsync(new MyLabels() { WorkspaceId = WorkspaceId, IsActive = true });
     }
+
+    async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, error);
 
     async Task SelectedLabelChange(IEnumerable<int> selectedValues)
     {
