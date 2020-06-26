@@ -47,5 +47,8 @@ namespace Testing
 
         [TestMethod]
         public void RebuildWorkItemLabelsQuery() => QueryHelper.Test<RebuildWorkItemLabels>(GetConnection);
+
+        [TestMethod]
+        public void OpenWorkItemsQuery() => QueryHelper.Test<OpenWorkItems>(GetConnection);
     }
 }

@@ -49,19 +49,19 @@
 
 
 @code {        
-        ErrorMessage error;
-        int WorkspaceId;
-        Models.WorkItem WorkItemRecord = new Models.WorkItem();
-        IEnumerable<KeyValuePair<int, string>> Folders;
-        IEnumerable<KeyValuePair<int, string>> Iterations;        
-        IEnumerable<Label> AllLabels = Enumerable.Empty<Label>();
-        RadzenCheckBoxList<int> LabelOptions;
-        List<RadzenCheckBoxListItem<int>> LabelCheckboxItems = new List<RadzenCheckBoxListItem<int>>();
+    ErrorMessage error;
+    int WorkspaceId;
+    Models.WorkItem WorkItemRecord = new Models.WorkItem();
+    IEnumerable<KeyValuePair<int, string>> Folders;
+    IEnumerable<KeyValuePair<int, string>> Iterations;        
+    IEnumerable<Label> AllLabels = Enumerable.Empty<Label>();
+    RadzenCheckBoxList<int> LabelOptions;
+    List<RadzenCheckBoxListItem<int>> LabelCheckboxItems = new List<RadzenCheckBoxListItem<int>>();
 
-        // thanks to https://stackoverflow.com/a/60083369/2023653
-        RadzenCheckBoxListItem<int> AddCheckboxRef { set { LabelCheckboxItems.Add(value); } }
+    // thanks to https://stackoverflow.com/a/60083369/2023653
+    RadzenCheckBoxListItem<int> AddCheckboxRef { set { LabelCheckboxItems.Add(value); } }
 
-        async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, error);
+    async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, error);
 
     protected override async Task OnInitializedAsync()
     {

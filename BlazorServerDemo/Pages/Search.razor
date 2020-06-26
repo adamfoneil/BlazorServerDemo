@@ -1,0 +1,62 @@
+﻿@page "/Search"
+@inject Data Data 
+
+<RadzenAccordion>
+    <Items>
+    @foreach (var folderGrp in WorkItems.GroupBy(item => item.FolderId))
+    {
+        <RadzenAccordionItem Text="@folderGrp.First().FolderPath">            
+            <table class="table">
+                <tr>
+                    <th>Number</th>
+                    <th>Folder</th>
+                    <th>Title</th>
+                    <th>Iteration</th>
+                    <th>Activity</th>
+                    <th>Assigned To</th>
+                </tr>
+                @foreach (var item in folderGrp)
+                {
+                    <tr>
+                        <td>@item.Number</td>
+                        <td>@item.FolderPath</td>
+                        <td>
+                            @item.Title
+                            @foreach (var lbl in Labels[item.Id])
+                            {
+                                <span class="badge" style="background-color:@lbl.BackColor;color:@lbl.TextColor">@lbl.Name</span>
+                            }
+                        </td>
+                        <td>@item.Iteration</td>
+                        <td>@item.CurrentActivity</td>
+                        <td>@item.AssignedTo</td>
+                    </tr>
+                }
+            </table>
+        </RadzenAccordionItem>
+    }
+    </Items>
+</RadzenAccordion>
+
+@code {
+    int WorkspaceId;
+    IEnumerable<OpenWorkItemsResult> WorkItems = Enumerable.Empty<OpenWorkItemsResult>();
+    ILookup<int, OpenWorkItemLabelsResult> Labels;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        WorkspaceId = await Data.GetWorkspaceIdAsync();
+
+        WorkItems = await Data.QueryAsync(new OpenWorkItems()
+        {
+            WorkspaceId = WorkspaceId
+        });
+
+        Labels = (await Data.QueryAsync(new OpenWorkItemLabels()
+        {
+            WorkspaceId = WorkspaceId
+        })).ToLookup(row => row.WorkItemId);
+    }
+}
