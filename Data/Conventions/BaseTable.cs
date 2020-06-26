@@ -45,7 +45,7 @@ namespace Models.Conventions
         public override bool Equals(object obj)
         {
             var test = obj as BaseTable;
-            return (test != null) ? test.Id == Id : false;
+            return (test != null) ? test.Id == Id && Id != 0 : false;
         }
 
         public override int GetHashCode()
