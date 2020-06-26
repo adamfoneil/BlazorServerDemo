@@ -93,7 +93,7 @@
             var checkbox = LabelCheckboxItems.Single(chk => chk.Value == kp.Key);
             await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
             {
-                { "Style", $"background-color:auto;color:auto" }
+                { "Style", "background-color:auto;color:auto" }
             }));
         }
     }
