@@ -53,8 +53,7 @@
         int WorkspaceId;
         Models.WorkItem WorkItemRecord = new Models.WorkItem();
         IEnumerable<KeyValuePair<int, string>> Folders;
-        IEnumerable<KeyValuePair<int, string>> Iterations;
-        IEnumerable<KeyValuePair<int, string>> Labels;
+        IEnumerable<KeyValuePair<int, string>> Iterations;        
         IEnumerable<Label> AllLabels = Enumerable.Empty<Label>();
         RadzenCheckBoxList<int> LabelOptions;
         List<RadzenCheckBoxListItem<int>> LabelCheckboxItems = new List<RadzenCheckBoxListItem<int>>();
@@ -71,8 +70,7 @@
         WorkspaceId = await Data.GetWorkspaceIdAsync();
         WorkItemRecord.WorkspaceId = WorkspaceId;
         Folders = await Data.QuerySelectListAsync<FolderSelect>(q => q.WorkspaceId = WorkspaceId);
-        Iterations = await Data.GetIterationsAsync();
-        Labels = await Data.QuerySelectListAsync<LabelSelect>(q => q.WorkspaceId = WorkspaceId);
+        Iterations = await Data.GetIterationsAsync();        
         AllLabels = await Data.QueryAsync(new MyLabels() { WorkspaceId = WorkspaceId, IsActive = true });
     }
 
@@ -86,7 +84,7 @@
             var label = labelDictionary[id];
             await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
             {
-                {  "Style", $"background-color:{label.BackColor};color:{label.TextColor}" }
+                { "Style", $"background-color:{label.BackColor};color:{label.TextColor}" }
             }));
         }
 
@@ -95,7 +93,7 @@
             var checkbox = LabelCheckboxItems.Single(chk => chk.Value == kp.Key);
             await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
             {
-                {  "Style", $"background-color:auto;color:auto" }
+                { "Style", $"background-color:auto;color:auto" }
             }));
         }
     }
