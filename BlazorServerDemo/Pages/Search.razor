@@ -1,11 +1,13 @@
 ﻿@page "/Search"
 @inject Data Data 
 
+<RadzenDropDown Data="Folders" TValue="int" ValueProperty="Id" TextProperty="FullPath" Change="@(args => RootOnChange(args))"/>
+
 <RadzenAccordion>
     <Items>
     @foreach (var folderGrp in WorkItems.GroupBy(item => item.FolderId))
     {
-        <RadzenAccordionItem Text="@folderGrp.First().FolderPath">            
+        <RadzenAccordionItem Text="@($"{folderGrp.First().FolderPath} - {folderGrp.Count()}")">
             <table class="table">
                 <tr>
                     <th>Number</th>                    
@@ -39,6 +41,7 @@
 @code {
     int RootId;
     int WorkspaceId;
+    IEnumerable<MyFolderTreeResult> Folders;
     IEnumerable<OpenWorkItemsResult> WorkItems = Enumerable.Empty<OpenWorkItemsResult>();
     ILookup<int, OpenWorkItemLabelsResult> Labels;
 
@@ -49,11 +52,18 @@
         WorkspaceId = await Data.GetWorkspaceIdAsync();
         RootId = WorkspaceId * -1;
 
+        Folders = await Data.QueryAsync(new MyFolderTree(RootId));
         WorkItems = await Data.QueryAsync(new OpenWorkItems(RootId) { WorkspaceId = WorkspaceId });
 
         Labels = (await Data.QueryAsync(new OpenWorkItemLabels()
         {
             WorkspaceId = WorkspaceId
         })).ToLookup(row => row.WorkItemId);
+    }
+
+    async Task RootOnChange(object rootValue)
+    {
+        int rootId = (int)rootValue;
+        WorkItems = await Data.QueryAsync(new OpenWorkItems(rootId) { WorkspaceId = WorkspaceId });
     }
 }
