@@ -64,10 +64,7 @@ namespace BlazorServerDemo.Queries
             yield return new MyFolderTree() { WorkspaceId = 1 };
         }
 
-        public IEnumerable<dynamic> TestExecute(IDbConnection connection)
-        {
-            return TestExecuteHelper(connection);
-        }
+        public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);
     }
 
     /// <summary>

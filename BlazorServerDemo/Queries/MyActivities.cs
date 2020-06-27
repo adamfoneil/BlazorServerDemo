@@ -30,9 +30,6 @@ namespace BlazorServerDemo.Queries
             yield return new MyActivities() { WorkspaceId = 1, IsActive = true };
         }
 
-        public IEnumerable<dynamic> TestExecute(IDbConnection connection)
-        {
-            return TestExecuteHelper(connection);
-        }
+        public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);
     }
 }

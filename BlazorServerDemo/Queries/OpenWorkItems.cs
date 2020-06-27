@@ -30,7 +30,20 @@ namespace BlazorServerDemo.Queries
     {
         public OpenWorkItems() : base(
             $@"WITH [tree] AS (
-                {MyFolderTree.RecursiveQuery}
+                SELECT
+                    [f].[Id], [f].[Name], 0 AS [Level], [f].[ParentId], CAST([f].[Name] AS varchar(255)) AS [FullPath]
+                FROM
+                    [dbo].[Folder] [f]
+                WHERE
+                    [f].[Id]=@rootFolderId
+
+                UNION ALL
+
+                SELECT
+                    [f].[Id], [f].[Name], [t].[Level]+1 AS [Level], [f].[ParentId], CAST(CONCAT([t].[FullPath], ' / ', [f].[Name]) as varchar(255)) AS [FullPath]
+                FROM 
+                    [dbo].[Folder] [f]                    
+                    INNER JOIN [tree] [t] ON [f].[ParentId]=[t].[Id]
             ) SELECT
                 [wi].*,
                 [a].[Name] AS [CurrentActivity],
@@ -49,8 +62,9 @@ namespace BlazorServerDemo.Queries
                 [wi].[CloseReasonId] IS NULL")
         {
         }
-
+        
         public int WorkspaceId { get; set; }
+        public int RootFolderId { get; set; }
 
         public IEnumerable<ITestableQuery> GetTestCases()
         {

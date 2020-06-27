@@ -8,8 +8,7 @@
         <RadzenAccordionItem Text="@folderGrp.First().FolderPath">            
             <table class="table">
                 <tr>
-                    <th>Number</th>
-                    <th>Folder</th>
+                    <th>Number</th>                    
                     <th>Title</th>
                     <th>Iteration</th>
                     <th>Activity</th>
@@ -18,8 +17,7 @@
                 @foreach (var item in folderGrp)
                 {
                     <tr>
-                        <td>@item.Number</td>
-                        <td>@item.FolderPath</td>
+                        <td>@item.Number</td>                        
                         <td>
                             @item.Title
                             @foreach (var lbl in Labels[item.Id])
