@@ -37,6 +37,7 @@
 </RadzenAccordion>
 
 @code {
+    int RootId;
     int WorkspaceId;
     IEnumerable<OpenWorkItemsResult> WorkItems = Enumerable.Empty<OpenWorkItemsResult>();
     ILookup<int, OpenWorkItemLabelsResult> Labels;
@@ -46,11 +47,9 @@
         await base.OnInitializedAsync();
 
         WorkspaceId = await Data.GetWorkspaceIdAsync();
+        RootId = WorkspaceId * -1;
 
-        WorkItems = await Data.QueryAsync(new OpenWorkItems()
-        {
-            WorkspaceId = WorkspaceId
-        });
+        WorkItems = await Data.QueryAsync(new OpenWorkItems(RootId) { WorkspaceId = WorkspaceId });
 
         Labels = (await Data.QueryAsync(new OpenWorkItemLabels()
         {

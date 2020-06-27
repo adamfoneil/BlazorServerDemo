@@ -37,18 +37,18 @@ namespace Testing
         public void MyIterationSchedulesQuery() => QueryHelper.Test<MyIterationSchedules>(GetConnection);
 
         [TestMethod]
-        public void MyFolderTreeQuery() => QueryHelper.Test<MyFolderTree>(GetConnection);
+        public void MyFolderTreeQuery() => QueryHelper.Test(() => new MyFolderTree(-1), GetConnection);
         
         [TestMethod]
-        public void CountWorkItemsByFolderQuery() => QueryHelper.Test<CountWorkItemsByFolder>(GetConnection);
+        public void CountWorkItemsByFolderQuery() => QueryHelper.Test(() => new CountWorkItemsByFolder(-1), GetConnection);
 
         [TestMethod]
-        public void FolderSelectQuery() => QueryHelper.Test<FolderSelect>(GetConnection);
+        public void FolderSelectQuery() => QueryHelper.Test(() => new FolderSelect(-1), GetConnection);
 
         [TestMethod]
         public void RebuildWorkItemLabelsQuery() => QueryHelper.Test<RebuildWorkItemLabels>(GetConnection);
 
         [TestMethod]
-        public void OpenWorkItemsQuery() => QueryHelper.Test<OpenWorkItems>(GetConnection);
+        public void OpenWorkItemsQuery() => QueryHelper.Test(() => new OpenWorkItems(-1), GetConnection);
     }
 }

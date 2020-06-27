@@ -16,9 +16,9 @@ namespace BlazorServerDemo.Queries
 
     public class CountWorkItemsByFolder : Query<CountWorkItemsByFolderResult>, ITestableQuery
     {
-        public CountWorkItemsByFolder() : base(
+        public CountWorkItemsByFolder(int rootId) : base(
             $@"WITH [tree] AS (
-                {MyFolderTree.RecursiveQuery}
+                {MyFolderTree.GetRecursiveQuery(rootId)}
             ) SELECT 
                 [f].[Id] AS [FolderId],
                 (SELECT COUNT(1) FROM [dbo].[WorkItem] WHERE [FolderId]=[f].[Id] AND [CloseReasonId] IS NULL) AS [OpenCount],
@@ -27,9 +27,10 @@ namespace BlazorServerDemo.Queries
                 [dbo].[Folder] [f]                
                 INNER JOIN [tree] [t] ON [f].[Id]=[t].[Id]")
         {
+            RootId = rootId;
         }
 
-        public int WorkspaceId { get; set; }
+        public int RootId { get; private set; }
 
         public async Task<Dictionary<int, CountWorkItemsByFolderResult>> ExecuteDictionaryAsync(IDbConnection connection)
         {
@@ -38,7 +39,8 @@ namespace BlazorServerDemo.Queries
 
         public IEnumerable<ITestableQuery> GetTestCases()
         {
-            yield return new CountWorkItemsByFolder() { WorkspaceId = -1 };
+            yield return new CountWorkItemsByFolder(-1);
+            yield return new CountWorkItemsByFolder(1);
         }
 
         public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);

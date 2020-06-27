@@ -88,14 +88,11 @@
     {
         var wsId = await Data.GetWorkspaceIdAsync();
 
-        AllFolders = (await Data.QueryAsync(new MyFolderTree()
-        {
-            WorkspaceId = wsId
-        })).ToList();
+        AllFolders = (await Data.QueryAsync(new MyFolderTree(wsId * -1))).ToList();
 
         using (var cn = Data.GetConnection())
         {
-            WorkItemCounts = await new CountWorkItemsByFolder() { WorkspaceId = wsId }.ExecuteDictionaryAsync(cn);
+            WorkItemCounts = await new CountWorkItemsByFolder(wsId * -1).ExecuteDictionaryAsync(cn);
             WorkItemCounts.Add(wsId * -1, new CountWorkItemsByFolderResult()
             {
                 OpenCount = WorkItemCounts.Sum(item => item.Value.OpenCount),

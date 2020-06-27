@@ -1,4 +1,5 @@
 ﻿using Dapper.QX;
+using Dapper.QX.Attributes;
 using Dapper.QX.Interfaces;
 using Models;
 using System;
@@ -34,34 +35,43 @@ namespace BlazorServerDemo.Queries
 
     public class MyFolderTree : Query<MyFolderTreeResult>, ITestableQuery
     {
-        public const string RecursiveQuery =
+        private static string GetRecursiveRootQuery(int rootId) => (rootId < 0) ?
             @"SELECT 
                 [ws].[Id] * -1 AS [Id], [ws].[Name], 0 AS [Level], 0 AS [ParentId], CAST([ws].[Name] as varchar(255)) AS [FullPath]
             FROM 
                 [dbo].[Workspace] [ws]  
             WHERE
-                [ws].[Id]=@workspaceId
+                [ws].[Id]=@rootId * -1" :
+            @"SELECT
+                [f].[Id], [f].[Name], 0 AS [Level], [f].[ParentId], CAST([f].[Name] AS varchar(255)) AS [FullPath]
+            FROM
+                [dbo].[Folder] [f]
+            WHERE
+                [f].[Id]=@rootId";
 
-            UNION ALL
-
+        public static string GetRecursiveQuery(int rootId) =>
+            $@"{GetRecursiveRootQuery(rootId)} 
+            UNION ALL 
             SELECT
                 [f].[Id], [f].[Name], [t].[Level]+1 AS [Level], [f].[ParentId], CAST(CONCAT([t].[FullPath], ' / ', [f].[Name]) as varchar(255)) AS [FullPath]
             FROM 
                 [dbo].[Folder] [f]                    
                 INNER JOIN [tree] [t] ON [f].[ParentId]=[t].[Id]";
 
-        public MyFolderTree() : base(
+        public MyFolderTree(int rootId) : base(
             $@"WITH [tree] AS (
-                {RecursiveQuery}
+                {GetRecursiveQuery(rootId)}
             ) SELECT * FROM [tree] ORDER BY [FullPath]")
         {
+            RootId = rootId;
         }
-
-        public int WorkspaceId { get; set; }
+        
+        public int RootId { get; private set; }
 
         public IEnumerable<ITestableQuery> GetTestCases()
         {
-            yield return new MyFolderTree() { WorkspaceId = 1 };
+            yield return new MyFolderTree(-1);
+            yield return new MyFolderTree(1);
         }
 
         public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);

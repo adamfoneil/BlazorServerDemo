@@ -67,7 +67,7 @@
 
         WorkspaceId = await Data.GetWorkspaceIdAsync();
         WorkItemRecord.WorkspaceId = WorkspaceId;
-        Folders = await Data.QuerySelectListAsync<FolderSelect>(q => q.WorkspaceId = WorkspaceId);
+        Folders = await Data.QuerySelectListAsync(() => new FolderSelect(WorkspaceId * -1));
         Iterations = await Data.GetIterationsAsync();        
         AllLabels = await Data.QueryAsync(new MyLabels() { WorkspaceId = WorkspaceId, IsActive = true });
     }

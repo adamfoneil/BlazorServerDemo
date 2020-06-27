@@ -28,22 +28,9 @@ namespace BlazorServerDemo.Queries
 
     public class OpenWorkItems : Query<OpenWorkItemsResult>, ITestableQuery
     {
-        public OpenWorkItems() : base(
+        public OpenWorkItems(int rootId) : base(
             $@"WITH [tree] AS (
-                SELECT
-                    [f].[Id], [f].[Name], 0 AS [Level], [f].[ParentId], CAST([f].[Name] AS varchar(255)) AS [FullPath]
-                FROM
-                    [dbo].[Folder] [f]
-                WHERE
-                    [f].[Id]=@rootFolderId
-
-                UNION ALL
-
-                SELECT
-                    [f].[Id], [f].[Name], [t].[Level]+1 AS [Level], [f].[ParentId], CAST(CONCAT([t].[FullPath], ' / ', [f].[Name]) as varchar(255)) AS [FullPath]
-                FROM 
-                    [dbo].[Folder] [f]                    
-                    INNER JOIN [tree] [t] ON [f].[ParentId]=[t].[Id]
+                {MyFolderTree.GetRecursiveQuery(rootId)}
             ) SELECT
                 [wi].*,
                 [a].[Name] AS [CurrentActivity],
@@ -61,14 +48,16 @@ namespace BlazorServerDemo.Queries
                 [wi].[WorkspaceId]=@workspaceId AND
                 [wi].[CloseReasonId] IS NULL")
         {
+            RootId = rootId;
         }
         
         public int WorkspaceId { get; set; }
-        public int RootFolderId { get; set; }
+        public int RootId { get; private set; }
 
         public IEnumerable<ITestableQuery> GetTestCases()
         {
-            yield return new OpenWorkItems() { WorkspaceId = -1 };
+            yield return new OpenWorkItems(-1);
+            yield return new OpenWorkItems(1);
         }
 
         public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);
