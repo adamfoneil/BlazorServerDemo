@@ -1,5 +1,6 @@
 ﻿@page "/Search"
 @inject Data Data 
+@inject Highligher Highligher
 
 <div class="d-flex flex-row justify-content-between">
     <div>
@@ -39,7 +40,7 @@
                     <tr>
                         <td>@item.Number</td>                        
                         <td>
-                            @item.Title
+                            @Highligher.Apply(item.Title, SearchBox.Value)                            
                             @foreach (var lbl in Labels[item.Id])
                             {
                                 <span class="badge" style="background-color:@lbl.BackColor;color:@lbl.TextColor">@lbl.Name</span>
