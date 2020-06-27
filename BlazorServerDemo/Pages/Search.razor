@@ -1,7 +1,25 @@
 ﻿@page "/Search"
 @inject Data Data 
 
-<RadzenDropDown Data="Folders" TValue="int" ValueProperty="Id" TextProperty="FullPath" Change="@(args => RootOnChange(args))"/>
+<div class="d-flex flex-row justify-content-between">
+    <div>
+        <RadzenDropDown Data="Folders" TValue="int" ValueProperty="Id" TextProperty="FullPath" Change="@(args => RootOnChange(args))"/>
+    </div>
+    <div>
+        <RadzenTextBox Placeholder="search" ValueChanged="@(args => RefreshListAsync())" @ref="SearchBox"/>
+    </div>
+</div>
+
+@if (Page > 0)
+{
+    <RadzenButton Click="@(args => GotoPage(-1))" Icon="skip_previous" ButtonStyle="ButtonStyle.Info"/>
+}
+
+<span>@Page</span>
+
+<RadzenButton Click="@(args => GotoPage(1))" Icon="skip_next" ButtonStyle="ButtonStyle.Info"/>
+
+<hr/>
 
 <RadzenAccordion>
     <Items>
@@ -41,9 +59,11 @@
 @code {
     int RootId;
     int WorkspaceId;
+    int Page;
     IEnumerable<MyFolderTreeResult> Folders;
     IEnumerable<OpenWorkItemsResult> WorkItems = Enumerable.Empty<OpenWorkItemsResult>();
     ILookup<int, OpenWorkItemLabelsResult> Labels;
+    RadzenTextBox SearchBox;
 
     protected override async Task OnInitializedAsync()
     {
@@ -53,7 +73,7 @@
         RootId = WorkspaceId * -1;
 
         Folders = await Data.QueryAsync(new MyFolderTree(RootId));
-        WorkItems = await Data.QueryAsync(new OpenWorkItems(RootId) { WorkspaceId = WorkspaceId });
+        await RefreshListAsync();
 
         Labels = (await Data.QueryAsync(new OpenWorkItemLabels()
         {
@@ -63,7 +83,23 @@
 
     async Task RootOnChange(object rootValue)
     {
-        int rootId = (int)rootValue;
-        WorkItems = await Data.QueryAsync(new OpenWorkItems(rootId) { WorkspaceId = WorkspaceId });
+        RootId = (int)rootValue;
+        await RefreshListAsync();
+    }
+
+    async Task GotoPage(int increment)
+    {
+        Page += increment;
+        await RefreshListAsync();
+    }
+
+    async Task RefreshListAsync()
+    {
+        WorkItems = await Data.QueryAsync(new OpenWorkItems(RootId) 
+        { 
+            WorkspaceId = WorkspaceId, 
+            Text = SearchBox.Value,
+            Page = Page 
+        });
     }
 }

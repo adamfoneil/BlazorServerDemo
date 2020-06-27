@@ -1,4 +1,5 @@
 ﻿using Dapper.QX;
+using Dapper.QX.Attributes;
 using Dapper.QX.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -46,13 +47,22 @@ namespace BlazorServerDemo.Queries
                 INNER JOIN [tree] [t] ON [wi].[FolderId]=[t].[Id]
             WHERE
                 [wi].[WorkspaceId]=@workspaceId AND
-                [wi].[CloseReasonId] IS NULL")
+                [wi].[CloseReasonId] IS NULL 
+                {{andWhere}}
+            ORDER BY
+                [wi].[Number] {{offset}}")
         {
             RootId = rootId;
         }
         
         public int WorkspaceId { get; set; }
         public int RootId { get; private set; }
+
+        [Phrase("Title")]
+        public string Text { get; set; }
+
+        [Offset(30)]
+        public int? Page { get; set; }
 
         public IEnumerable<ITestableQuery> GetTestCases()
         {
