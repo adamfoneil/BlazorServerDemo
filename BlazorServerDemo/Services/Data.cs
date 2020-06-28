@@ -3,7 +3,6 @@ using BlazorServerDemo.Queries;
 using Dapper.CX.SqlServer.Services;
 using Dapper.QX;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -151,7 +150,7 @@ namespace BlazorServerDemo.Services
                 var query = createQuery.Invoke();
                 setParams?.Invoke(query);
                 return await query.ExecuteAsync(cn);
-            }            
+            }
         }
 
         public async Task<IEnumerable<KeyValuePair<int, string>>> QuerySelectListAsync<TQuery>(Action<TQuery> setParams = null) where TQuery : Query<KeyValuePair<int, string>>, new()

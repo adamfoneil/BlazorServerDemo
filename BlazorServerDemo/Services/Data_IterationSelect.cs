@@ -17,7 +17,7 @@ namespace BlazorServerDemo.Services
         }
 
         private IEnumerable<KeyValuePair<int, string>> GetIterationsInner(IterationSchedule schedule, int count)
-        {            
+        {
             yield return new KeyValuePair<int, string>(-1, "Backlog");
 
             int index = 0;
@@ -35,7 +35,7 @@ namespace BlazorServerDemo.Services
 
             string getName(int index)
             {
-                return 
+                return
                     (index == 0) ? "Current" :
                     (index == 1) ? "Next" :
                     $"+{index}";

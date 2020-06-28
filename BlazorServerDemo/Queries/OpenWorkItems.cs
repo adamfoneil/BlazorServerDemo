@@ -59,7 +59,7 @@ namespace BlazorServerDemo.Queries
 
         [Phrase("Title")]
         public string Text { get; set; }
-        
+
         [Where("EXISTS(SELECT 1 FROM [dbo].[WorkItemLabel] WHERE [WorkItemId]=[wi].[Id] AND [LabelId] IN @labelIds)")]
         public int[] LabelIds { get; set; }
 

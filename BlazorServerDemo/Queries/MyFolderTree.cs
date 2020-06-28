@@ -1,5 +1,4 @@
 ﻿using Dapper.QX;
-using Dapper.QX.Attributes;
 using Dapper.QX.Interfaces;
 using Models;
 using System;
@@ -65,7 +64,7 @@ namespace BlazorServerDemo.Queries
         {
             RootId = rootId;
         }
-        
+
         public int RootId { get; private set; }
 
         public IEnumerable<ITestableQuery> GetTestCases()
