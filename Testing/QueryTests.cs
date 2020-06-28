@@ -50,5 +50,8 @@ namespace Testing
 
         [TestMethod]
         public void OpenWorkItemsQuery() => QueryHelper.Test(() => new OpenWorkItems(-1), GetConnection);
+
+        [TestMethod]
+        public void OpenWorkItemLabelCountsQuery() => QueryHelper.Test(() => new OpenWorkItemLabelCounts(-1), GetConnection);
     }
 }

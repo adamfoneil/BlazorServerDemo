@@ -1,9 +1,8 @@
-﻿using Dapper.QX;
+﻿using Dapper.QX.Abstract;
 using Dapper.QX.Attributes;
 using Dapper.QX.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace BlazorServerDemo.Queries
 {
@@ -27,7 +26,7 @@ namespace BlazorServerDemo.Queries
         public string AssignedTo { get; set; }
     }
 
-    public class OpenWorkItems : Query<OpenWorkItemsResult>, ITestableQuery
+    public class OpenWorkItems : TestableQuery<OpenWorkItemsResult>
     {
         public OpenWorkItems(int rootId) : base(
             $@"WITH [tree] AS (
@@ -54,22 +53,24 @@ namespace BlazorServerDemo.Queries
         {
             RootId = rootId;
         }
-        
+
         public int WorkspaceId { get; set; }
         public int RootId { get; private set; }
 
         [Phrase("Title")]
         public string Text { get; set; }
+        
+        [Where("EXISTS(SELECT 1 FROM [dbo].[WorkItemLabel] WHERE [WorkItemId]=[wi].[Id] AND [LabelId] IN @labelIds)")]
+        public int[] LabelIds { get; set; }
 
         [Offset(30)]
         public int? Page { get; set; }
 
-        public IEnumerable<ITestableQuery> GetTestCases()
+        protected override IEnumerable<ITestableQuery> GetTestCasesInner()
         {
             yield return new OpenWorkItems(-1);
             yield return new OpenWorkItems(1);
+            yield return new OpenWorkItems(232) { LabelIds = new int[] { 1, 2, 3 } };
         }
-
-        public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);
     }
 }
