@@ -49,6 +49,7 @@ namespace BlazorServerDemo.Queries
                 [wi].[CloseReasonId] IS NULL 
                 {{andWhere}}
             ORDER BY
+                [t].[FullPath],
                 [wi].[Number] {{offset}}")
         {
             RootId = rootId;
