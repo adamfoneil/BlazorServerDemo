@@ -32,6 +32,10 @@
 
     <div class="row">
         <label>Labels:</label>
+        <!--new component (not working)-->
+        <LabelSelector Orientation="Orientation.Horizontal" Labels="AllLabels" @bind-Value="WorkItemRecord.SelectedLabels"/>
+
+        <!--old markup-->
         <RadzenCheckBoxList TValue="int" Orientation="Orientation.Horizontal" Change="@(value => SelectedLabelChange(value))" @ref="LabelOptions" @bind-Value="WorkItemRecord.SelectedLabels">
             <Items>
                 @foreach (var lbl in AllLabels)
@@ -46,7 +50,6 @@
 
     <RadzenButton Click="NewWorkItem" Text="New Work Item"/>
 </EditForm>
-
 
 @code {        
     ErrorMessage error;
