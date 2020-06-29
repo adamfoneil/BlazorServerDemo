@@ -1,6 +1,6 @@
-﻿using BlazorServerDemo.Interfaces;
-using Dapper.QX.Abstract;
+﻿using Dapper.QX.Abstract;
 using Dapper.QX.Interfaces;
+using Models.Interfaces;
 using System.Collections.Generic;
 
 namespace BlazorServerDemo.Queries

@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <Folder Include="Config\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
 
   <ItemGroup>

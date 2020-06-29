@@ -1,4 +1,4 @@
-﻿namespace BlazorServerDemo.Interfaces
+﻿namespace Models.Interfaces
 {
     public interface ILabel
     {

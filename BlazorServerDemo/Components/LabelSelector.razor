@@ -7,6 +7,11 @@
     </Items>
 </RadzenCheckBoxList>
 
+@if (!GetLabels().Any())
+{
+    <p>no labels defined</p>
+}
+
 @code {
     [Parameter]
     public Orientation Orientation { get; set; }
@@ -17,8 +22,11 @@
     [Parameter]
     public EventCallback LabelSelected { get; set; }
 
-    [ParameterAttribute]
+    [Parameter]
     public IEnumerable<int> Value { get; set; }
+
+    [Parameter]
+    public EventCallback<IEnumerable<int>> ValueChanged { get; set; }
 
     public Func<ILabel, string> GetText = (lbl) => lbl.Name;
 

@@ -1,10 +1,11 @@
 ﻿using AO.Models;
 using Models.Conventions;
+using Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models
 {
-    public partial class Label : BaseTable
+    public partial class Label : BaseTable, ILabel
     {
         [Key]
         [References(typeof(Workspace))]

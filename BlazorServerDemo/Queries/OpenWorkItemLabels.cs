@@ -1,19 +1,17 @@
-﻿using BlazorServerDemo.Interfaces;
-using Dapper.QX;
+﻿using Dapper.QX;
 using Dapper.QX.Interfaces;
 using System.Collections.Generic;
 using System.Data;
 
 namespace BlazorServerDemo.Queries
 {
-    public class OpenWorkItemLabelsResult : ILabel
+    public class OpenWorkItemLabelsResult
     {
         public int WorkItemId { get; set; }
         public int LabelId { get; set; }
         public string Name { get; set; }
         public string BackColor { get; set; }
-        public string TextColor { get; set; }
-        public int Id { get => LabelId; }
+        public string TextColor { get; set; }        
     }
 
     public class OpenWorkItemLabels : Query<OpenWorkItemLabelsResult>, ITestableQuery
