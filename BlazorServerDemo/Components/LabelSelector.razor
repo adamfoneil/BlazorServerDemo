@@ -20,10 +20,7 @@
     public IEnumerable Labels { get; set; }
 
     [Parameter]
-    public EventCallback LabelSelected { get; set; }
-
-    [Parameter]
-    public IEnumerable<int> Value { get; set; }
+    public IEnumerable<int> Value { get; set; } = Enumerable.Empty<int>();
 
     [Parameter]
     public EventCallback<IEnumerable<int>> ValueChanged { get; set; }
@@ -61,7 +58,8 @@
             }));
         }
 
-        await LabelSelected.InvokeAsync(selectedValues);
+        Value = selectedValues;
+        await ValueChanged.InvokeAsync(selectedValues);
     }
 
     public void ClearLabels() => LabelCheckboxItems.Clear();
