@@ -32,7 +32,7 @@
 
     <div class="row">
         <label>Labels:</label>        
-        <LabelSelector Orientation="Orientation.Horizontal" Labels="AllLabels" @bind-Value="WorkItemRecord.SelectedLabels" @ref="labelSelector"/>        
+        <LabelSelector Orientation="Orientation.Horizontal" Data="AllLabels" @bind-Value="WorkItemRecord.SelectedLabels" @ref="labelSelector"/>        
     </div>
 
     <RadzenButton ButtonType="ButtonType.Submit" Text="Save Work Item"/>

@@ -7,7 +7,7 @@
         <RadzenDropDown Data="Folders" TValue="int" ValueProperty="Id" TextProperty="FullPath" Change="@(args => RootOnChange(args))"/>
     </div>
     <div>
-        <LabelSelector Orientation="Orientation.Horizontal" Labels="FilterLabels" ValueChanged="@(value => RefreshListAsync())" @ref="labelFilter"/>
+        <LabelSelector Orientation="Orientation.Horizontal" Data="FilterLabels" ValueChanged="@(value => RefreshListAsync())" @ref="labelFilter"/>
     </div>
     <div>
         <RadzenTextBox Placeholder="search" ValueChanged="@(args => RefreshListAsync())" @ref="SearchBox"/>
@@ -68,11 +68,8 @@
     IEnumerable<OpenWorkItemsResult> WorkItems = Enumerable.Empty<OpenWorkItemsResult>();
     ILookup<int, OpenWorkItemLabelsResult> Labels;
     RadzenTextBox SearchBox;
-    IEnumerable<OpenWorkItemLabelCountsResult> FilterLabels = Enumerable.Empty<OpenWorkItemLabelCountsResult>();
-    List<RadzenCheckBoxListItem<int>> FilterLabelItems = new List<RadzenCheckBoxListItem<int>>();
+    IEnumerable<OpenWorkItemLabelCountsResult> FilterLabels = Enumerable.Empty<OpenWorkItemLabelCountsResult>();    
     LabelSelector labelFilter;
-
-    RadzenCheckBoxListItem<int> AddCheckboxRef { set { FilterLabelItems.Add(value); } }
 
     protected override async Task OnInitializedAsync()
     {

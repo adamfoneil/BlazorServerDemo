@@ -17,7 +17,7 @@
     public Orientation Orientation { get; set; }
 
     [Parameter]
-    public IEnumerable Labels { get; set; }
+    public IEnumerable Data { get; set; }
 
     [Parameter]
     public IEnumerable<int> Value { get; set; } = Enumerable.Empty<int>();
@@ -27,7 +27,7 @@
 
     public Func<ILabel, string> GetText = (lbl) => lbl.Name;
 
-    private IEnumerable<ILabel> GetLabels() => Labels.OfType<ILabel>();
+    private IEnumerable<ILabel> GetLabels() => Data.OfType<ILabel>();
 
     List<RadzenCheckBoxListItem<int>> LabelCheckboxItems = new List<RadzenCheckBoxListItem<int>>();
 
@@ -36,7 +36,7 @@
 
     private async Task SelectedLabelChange(IEnumerable<int> selectedValues)
     {
-        var labels = Labels.OfType<ILabel>();
+        var labels = Data.OfType<ILabel>();
         var labelDictionary = labels.ToDictionary(row => row.Id);
 
         foreach (var id in selectedValues)
