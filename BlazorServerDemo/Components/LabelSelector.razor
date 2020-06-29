@@ -27,6 +27,8 @@
 
     public Func<ILabel, string> GetText = (lbl) => lbl.Name;
 
+    public string GetSelectedLabelIds() => (Value != null) ? string.Join(", ", Value) : "no labels selected";
+
     private IEnumerable<ILabel> GetLabels() => Data.OfType<ILabel>();
 
     List<RadzenCheckBoxListItem<int>> LabelCheckboxItems = new List<RadzenCheckBoxListItem<int>>();
@@ -59,7 +61,7 @@
         }
 
         Value = selectedValues;
-        await ValueChanged.InvokeAsync(selectedValues);
+        await ValueChanged.InvokeAsync(selectedValues);        
     }
 
     public void ClearLabels() => LabelCheckboxItems.Clear();

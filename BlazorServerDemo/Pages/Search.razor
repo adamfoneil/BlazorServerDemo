@@ -14,6 +14,8 @@
     </div>
 </div>
 
+<p>selected labels = @labelFilter?.GetSelectedLabelIds(), @WorkItems.Count() work items listed</p>
+
 @if (Page > 0)
 {
     <RadzenButton Click="@(args => GotoPage(-1))" Icon="skip_previous" ButtonStyle="ButtonStyle.Info"/>
@@ -25,7 +27,7 @@
 
 <hr/>
 
-<RadzenAccordion Multiple="true">
+<RadzenAccordion Multiple="true" @ref="accordion">
     <Items>
     @foreach (var folderGrp in WorkItems.GroupBy(item => item.FolderId))
     {
@@ -40,7 +42,7 @@
                 </tr>
                 @foreach (var item in folderGrp)
                 {
-                    <tr>
+                    <tr id="work-item-@item.Id">
                         <td>@item.Number</td>                        
                         <td>
                             @Highligher.Apply(item.Title, SearchBox.Value)                            
@@ -70,6 +72,7 @@
     RadzenTextBox SearchBox;
     IEnumerable<OpenWorkItemLabelCountsResult> FilterLabels = Enumerable.Empty<OpenWorkItemLabelCountsResult>();    
     LabelSelector labelFilter;
+    RadzenAccordion accordion;
 
     protected override async Task OnInitializedAsync()
     {
@@ -115,6 +118,6 @@
             Text = SearchBox.Value,
             LabelIds = labelIds,
             Page = Page
-        });
+        });        
     }
 }
