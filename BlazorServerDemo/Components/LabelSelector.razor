@@ -1,0 +1,66 @@
+﻿<RadzenCheckBoxList TValue="int" Orientation="this.Orientation" Change="@(value => SelectedLabelChange(value))">
+    <Items>
+        @foreach (var lbl in GetLabels())
+        {
+            <RadzenCheckBoxListItem Value="lbl.Id" Text="@GetText(lbl)" @ref="AddCheckboxRef"/>                    
+        }
+    </Items>
+</RadzenCheckBoxList>
+
+@if (!GetLabels().Any())
+{
+    <p>no labels defined</p>
+}
+
+@code {
+    [Parameter]
+    public Orientation Orientation { get; set; }
+
+    [Parameter]
+    public IEnumerable Labels { get; set; }
+
+    [Parameter]
+    public IEnumerable<int> Value { get; set; } = Enumerable.Empty<int>();
+
+    [Parameter]
+    public EventCallback<IEnumerable<int>> ValueChanged { get; set; }
+
+    public Func<ILabel, string> GetText = (lbl) => lbl.Name;
+
+    private IEnumerable<ILabel> GetLabels() => Labels.OfType<ILabel>();
+
+    List<RadzenCheckBoxListItem<int>> LabelCheckboxItems = new List<RadzenCheckBoxListItem<int>>();
+
+    // thanks to https://stackoverflow.com/a/60083369/2023653
+    RadzenCheckBoxListItem<int> AddCheckboxRef { set { LabelCheckboxItems.Add(value); } }
+
+    private async Task SelectedLabelChange(IEnumerable<int> selectedValues)
+    {
+        var labels = Labels.OfType<ILabel>();
+        var labelDictionary = labels.ToDictionary(row => row.Id);
+
+        foreach (var id in selectedValues)
+        {
+            var checkbox = LabelCheckboxItems.Single(chk => chk.Value == id);
+            var label = labelDictionary[id];
+            await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
+            {
+                { "Style", $"background-color:{label.BackColor};color:{label.TextColor}" }
+            }));
+        }
+
+        foreach (var kp in labelDictionary.Where(kp => !selectedValues.Contains(kp.Key)))
+        {
+            var checkbox = LabelCheckboxItems.Single(chk => chk.Value == kp.Key);
+            await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
+            {
+                { "Style", "background-color:auto;color:auto" }
+            }));
+        }
+
+        Value = selectedValues;
+        await ValueChanged.InvokeAsync(selectedValues);
+    }
+
+    public void ClearLabels() => LabelCheckboxItems.Clear();
+}

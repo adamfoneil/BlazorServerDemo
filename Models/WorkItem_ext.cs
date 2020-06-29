@@ -27,6 +27,8 @@ namespace Models
 
         public async Task RowSavedAsync(IDbConnection connection, SaveAction saveAction, IDbTransaction txn = null)
         {
+            if (SelectedLabels == null) return;
+
             await new RebuildWorkItemLabels()
             {
                 WorkItemId = Id,

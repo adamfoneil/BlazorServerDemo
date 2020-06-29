@@ -13,6 +13,7 @@
     <Compile Include="..\Data\FolderLevel.cs" Link="FolderLevel.cs" />
     <Compile Include="..\Data\HandOff.cs" Link="HandOff.cs" />
     <Compile Include="..\Data\Interfaces\IBody.cs" Link="Interfaces\IBody.cs" />
+    <Compile Include="..\Data\Interfaces\ILabel.cs" Link="Interfaces\ILabel.cs" />
     <Compile Include="..\Data\IterationSchedule.cs" Link="IterationSchedule.cs" />
     <Compile Include="..\Data\Label.cs" Link="Label.cs" />
     <Compile Include="..\Data\UserProfile.cs" Link="UserProfile.cs" />

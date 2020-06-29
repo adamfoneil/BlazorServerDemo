@@ -6,15 +6,8 @@
     <div>
         <RadzenDropDown Data="Folders" TValue="int" ValueProperty="Id" TextProperty="FullPath" Change="@(args => RootOnChange(args))"/>
     </div>
-    <div>        
-        <RadzenCheckBoxList TValue="int" Orientation="Orientation.Horizontal" Change="@(value => FilterLabelChange(value))">
-            <Items>
-                @foreach (var lbl in FilterLabels)
-                {                                        
-                    <RadzenCheckBoxListItem Value="lbl.Id" Text="@($"{lbl.Name} - {lbl.Count}")" @ref="AddCheckboxRef"/>                    
-                }
-            </Items>
-        </RadzenCheckBoxList>
+    <div>
+        <LabelSelector Orientation="Orientation.Horizontal" Labels="FilterLabels" ValueChanged="@(value => RefreshListAsync())" @ref="labelFilter"/>
     </div>
     <div>
         <RadzenTextBox Placeholder="search" ValueChanged="@(args => RefreshListAsync())" @ref="SearchBox"/>
@@ -77,7 +70,7 @@
     RadzenTextBox SearchBox;
     IEnumerable<OpenWorkItemLabelCountsResult> FilterLabels = Enumerable.Empty<OpenWorkItemLabelCountsResult>();
     List<RadzenCheckBoxListItem<int>> FilterLabelItems = new List<RadzenCheckBoxListItem<int>>();
-    int[] FilterLabelIds;
+    LabelSelector labelFilter;
 
     RadzenCheckBoxListItem<int> AddCheckboxRef { set { FilterLabelItems.Add(value); } }
 
@@ -116,41 +109,15 @@
 
     async Task RefreshListAsync()
     {
-        if (!FilterLabelIds?.Any() ?? false) FilterLabelIds = null;
+        var labelIds = labelFilter.Value?.ToArray();
+        if (!labelIds.Any()) labelIds = null;
 
         WorkItems = await Data.QueryAsync(new OpenWorkItems(RootId)
         {
             WorkspaceId = WorkspaceId,
             Text = SearchBox.Value,
-            LabelIds = FilterLabelIds,
+            LabelIds = labelIds,
             Page = Page
         });
-    }
-
-    async Task FilterLabelChange(IEnumerable<int> selectedValues)
-    {
-        FilterLabelIds = selectedValues.ToArray();
-        var labelDictionary = FilterLabels.ToDictionary(row => row.Id);
-
-        foreach (var id in selectedValues)
-        {
-            var checkbox = FilterLabelItems.Single(chk => chk.Value == id);
-            var label = labelDictionary[id];
-            await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
-            {
-                { "Style", $"background-color:{label.BackColor};color:{label.TextColor}" }
-            }));
-        }
-
-        foreach (var kp in labelDictionary.Where(kp => !selectedValues.Contains(kp.Key)))
-        {
-            var checkbox = FilterLabelItems.Single(chk => chk.Value == kp.Key);
-            await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
-            {
-                { "Style", "background-color:auto;color:auto" }
-            }));
-        }
-
-        await RefreshListAsync();
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Dapper.QX.Abstract;
 using Dapper.QX.Interfaces;
+using Models.Interfaces;
 using System.Collections.Generic;
 
 namespace BlazorServerDemo.Queries
 {
-    public class OpenWorkItemLabelCountsResult
+    public class OpenWorkItemLabelCountsResult : ILabel
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -11,7 +11,7 @@ namespace BlazorServerDemo.Queries
         public int LabelId { get; set; }
         public string Name { get; set; }
         public string BackColor { get; set; }
-        public string TextColor { get; set; }
+        public string TextColor { get; set; }        
     }
 
     public class OpenWorkItemLabels : Query<OpenWorkItemLabelsResult>, ITestableQuery

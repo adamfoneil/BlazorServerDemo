@@ -31,15 +31,8 @@
     </div>
 
     <div class="row">
-        <label>Labels:</label>
-        <RadzenCheckBoxList TValue="int" Orientation="Orientation.Horizontal" Change="@(value => SelectedLabelChange(value))" @ref="LabelOptions" @bind-Value="WorkItemRecord.SelectedLabels">
-            <Items>
-                @foreach (var lbl in AllLabels)
-                {                                        
-                    <RadzenCheckBoxListItem Value="lbl.Id" Text="@lbl.Name" @ref="AddCheckboxRef"/>                    
-                }
-            </Items>
-        </RadzenCheckBoxList>
+        <label>Labels:</label>        
+        <LabelSelector Orientation="Orientation.Horizontal" Labels="AllLabels" @bind-Value="WorkItemRecord.SelectedLabels" @ref="labelSelector"/>        
     </div>
 
     <RadzenButton ButtonType="ButtonType.Submit" Text="Save Work Item"/>
@@ -47,20 +40,15 @@
     <RadzenButton Click="NewWorkItem" Text="New Work Item"/>
 </EditForm>
 
-
 @code {        
     ErrorMessage error;
     int WorkspaceId;
     Models.WorkItem WorkItemRecord = new Models.WorkItem();
     IEnumerable<KeyValuePair<int, string>> Folders;
-    IEnumerable<KeyValuePair<int, string>> Iterations;        
-    IEnumerable<Label> AllLabels = Enumerable.Empty<Label>();
-    RadzenCheckBoxList<int> LabelOptions;
-    List<RadzenCheckBoxListItem<int>> LabelCheckboxItems = new List<RadzenCheckBoxListItem<int>>();
+    IEnumerable<KeyValuePair<int, string>> Iterations;
+    IEnumerable<Label> AllLabels = Enumerable.Empty<Label>();    
+    LabelSelector labelSelector;
 
-    // thanks to https://stackoverflow.com/a/60083369/2023653
-    RadzenCheckBoxListItem<int> AddCheckboxRef { set { LabelCheckboxItems.Add(value); } }
-   
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -68,39 +56,15 @@
         WorkspaceId = await Data.GetWorkspaceIdAsync();
         WorkItemRecord.WorkspaceId = WorkspaceId;
         Folders = await Data.QuerySelectListAsync(() => new FolderSelect(WorkspaceId * -1));
-        Iterations = await Data.GetIterationsAsync();        
+        Iterations = await Data.GetIterationsAsync();
         AllLabels = await Data.QueryAsync(new MyLabels() { WorkspaceId = WorkspaceId, IsActive = true });
     }
 
     async Task WorkItemOnSubmit() => await Data.SaveAsync(WorkItemRecord, error);
 
-    async Task SelectedLabelChange(IEnumerable<int> selectedValues)
-    {
-        var labelDictionary = AllLabels.ToDictionary(row => row.Id);
-
-        foreach (var id in selectedValues)
-        {
-            var checkbox = LabelCheckboxItems.Single(chk => chk.Value == id);
-            var label = labelDictionary[id];
-            await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
-            {
-                { "Style", $"background-color:{label.BackColor};color:{label.TextColor}" }
-            }));
-        }
-
-        foreach (var kp in labelDictionary.Where(kp => !selectedValues.Contains(kp.Key)))
-        {
-            var checkbox = LabelCheckboxItems.Single(chk => chk.Value == kp.Key);
-            await checkbox.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object>()
-            {
-                { "Style", "background-color:auto;color:auto" }
-            }));
-        }
-    }
-
     void NewWorkItem()
-    {
-        LabelCheckboxItems.Clear(); // prevents redundant items in checkbox item list
+    {        
+        labelSelector.ClearLabels(); // prevents redundant items in checkbox item list
         WorkItemRecord = new Models.WorkItem() { WorkspaceId = WorkspaceId };
     }
 }
