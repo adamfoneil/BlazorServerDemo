@@ -73,6 +73,7 @@ namespace BlazorServerDemo.Queries
             yield return new OpenWorkItems(1);
             yield return new OpenWorkItems(232) { LabelIds = new int[] { 1, 2, 3 } };
             yield return new OpenWorkItems(1) { Text = "this that other" };
+            yield return new OpenWorkItems(1) { Page = 4 };
         }
     }
 }
