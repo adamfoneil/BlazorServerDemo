@@ -1,11 +1,12 @@
 ﻿using Dapper.QX;
+using Dapper.QX.Abstract;
 using Dapper.QX.Interfaces;
 using System.Collections.Generic;
 using System.Data;
 
 namespace Models.Queries
 {
-    public class RebuildWorkItemLabels : Query<int>, ITestableQuery
+    public class RebuildWorkItemLabels : TestableQuery<int>
     {
         public RebuildWorkItemLabels() : base(
             @"DELETE [dbo].[WorkItemLabel] WHERE [WorkItemId]=@workItemId;
@@ -26,14 +27,9 @@ namespace Models.Queries
         public int WorkItemId { get; set; }
         public int[] LabelIds { get; set; }
 
-        public IEnumerable<ITestableQuery> GetTestCases()
+        protected override IEnumerable<ITestableQuery> GetTestCasesInner()
         {
             yield return new RebuildWorkItemLabels() { WorkItemId = -1, LabelIds = new int[] { 1, 2, 3 } };
-        }
-
-        public IEnumerable<dynamic> TestExecute(IDbConnection connection)
-        {
-            return TestExecuteHelper(connection);
         }
     }
 }
