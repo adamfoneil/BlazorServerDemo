@@ -20,6 +20,7 @@ namespace Testing
 
         private SqlConnection GetConnection()
         {
+            // could've done this with LocalDb library, but this example is okay to see
             string connectionStr = _config.GetSection("ConnectionStrings").GetValue<string>("Default");
             return new SqlConnection(connectionStr);
         }
@@ -44,6 +45,9 @@ namespace Testing
 
         [TestMethod]
         public void FolderSelectQuery() => QueryHelper.Test(() => new FolderSelect(-1), GetConnection);
+
+        [TestMethod]
+        public void LabelSelectQuery() => QueryHelper.Test<LabelSelect>(GetConnection);
 
         [TestMethod]
         public void RebuildWorkItemLabelsQuery() => QueryHelper.Test<RebuildWorkItemLabels>(GetConnection);

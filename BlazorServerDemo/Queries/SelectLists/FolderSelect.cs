@@ -1,11 +1,10 @@
-﻿using Dapper.QX;
+﻿using Dapper.QX.Abstract;
 using Dapper.QX.Interfaces;
 using System.Collections.Generic;
-using System.Data;
 
 namespace BlazorServerDemo.Queries.SelectLists
 {
-    public class FolderSelect : Query<KeyValuePair<int, string>>, ITestableQuery
+    public class FolderSelect : TestableQuery<KeyValuePair<int, string>>
     {
         public FolderSelect(int rootId) : base(
             $@"WITH [tree] AS ({MyFolderTree.GetRecursiveQuery(rootId)}) 
@@ -19,15 +18,10 @@ namespace BlazorServerDemo.Queries.SelectLists
 
         public int RootId { get; private set; }
 
-        public IEnumerable<ITestableQuery> GetTestCases()
+        protected override IEnumerable<ITestableQuery> GetTestCasesInner()
         {
             yield return new FolderSelect(-1);
             yield return new FolderSelect(1);
-        }
-
-        public IEnumerable<dynamic> TestExecute(IDbConnection connection)
-        {
-            return TestExecuteHelper(connection);
         }
     }
 }
