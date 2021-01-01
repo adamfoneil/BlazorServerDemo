@@ -1,13 +1,12 @@
-﻿using Dapper.QX;
+﻿using Dapper.QX.Abstract;
 using Dapper.QX.Attributes;
 using Dapper.QX.Interfaces;
 using Models;
 using System.Collections.Generic;
-using System.Data;
 
 namespace BlazorServerDemo.Queries
 {
-    public class MyIterationSchedules : Query<IterationSchedule>, ITestableQuery
+    public class MyIterationSchedules : TestableQuery<IterationSchedule>
     {
         public MyIterationSchedules() : base("SELECT * FROM [dbo].[IterationSchedule] WHERE [WorkspaceId]=@workspaceId {andWhere} ORDER BY [Name]")
         {
@@ -18,11 +17,9 @@ namespace BlazorServerDemo.Queries
         [Where("[IsActive]=@isActive")]
         public bool? IsActive { get; set; }
 
-        public IEnumerable<ITestableQuery> GetTestCases()
+        protected override IEnumerable<ITestableQuery> GetTestCasesInner()
         {
             yield return new MyIterationSchedules() { WorkspaceId = 1, IsActive = true };
         }
-
-        public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);
     }
 }

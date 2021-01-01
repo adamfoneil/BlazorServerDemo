@@ -1,4 +1,5 @@
 ﻿using Dapper.QX;
+using Dapper.QX.Abstract;
 using Dapper.QX.Interfaces;
 using System.Collections.Generic;
 using System.Data;
@@ -14,7 +15,7 @@ namespace BlazorServerDemo.Queries
         public int ClosedCount { get; set; }
     }
 
-    public class CountWorkItemsByFolder : Query<CountWorkItemsByFolderResult>, ITestableQuery
+    public class CountWorkItemsByFolder : TestableQuery<CountWorkItemsByFolderResult>
     {
         public CountWorkItemsByFolder(int rootId) : base(
             $@"WITH [tree] AS (
@@ -37,12 +38,10 @@ namespace BlazorServerDemo.Queries
             return (await ExecuteAsync(connection)).ToDictionary(row => row.FolderId);
         }
 
-        public IEnumerable<ITestableQuery> GetTestCases()
+        protected override IEnumerable<ITestableQuery> GetTestCasesInner()
         {
             yield return new CountWorkItemsByFolder(-1);
             yield return new CountWorkItemsByFolder(1);
         }
-
-        public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);
     }
 }

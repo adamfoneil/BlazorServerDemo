@@ -1,4 +1,5 @@
 ﻿using Dapper.QX;
+using Dapper.QX.Abstract;
 using Dapper.QX.Interfaces;
 using System.Collections.Generic;
 using System.Data;
@@ -14,7 +15,7 @@ namespace BlazorServerDemo.Queries
         public string TextColor { get; set; }        
     }
 
-    public class OpenWorkItemLabels : Query<OpenWorkItemLabelsResult>, ITestableQuery
+    public class OpenWorkItemLabels : TestableQuery<OpenWorkItemLabelsResult>
     {
         public OpenWorkItemLabels() : base(
             @"SELECT
@@ -35,11 +36,9 @@ namespace BlazorServerDemo.Queries
 
         public int WorkspaceId { get; set; }
 
-        public IEnumerable<ITestableQuery> GetTestCases()
+        protected override IEnumerable<ITestableQuery> GetTestCasesInner()
         {
             yield return new OpenWorkItemLabels() { WorkspaceId = -1 };
         }
-
-        public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);
     }
 }

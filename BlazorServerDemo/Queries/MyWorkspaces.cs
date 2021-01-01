@@ -1,4 +1,5 @@
 ﻿using Dapper.QX;
+using Dapper.QX.Abstract;
 using Dapper.QX.Interfaces;
 using Models;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Data;
 
 namespace BlazorServerDemo.Queries
 {
-    public class MyWorkspaces : Query<Workspace>, ITestableQuery
+    public class MyWorkspaces : TestableQuery<Workspace>
     {
         public MyWorkspaces() : base(
             @"SELECT 
@@ -23,11 +24,9 @@ namespace BlazorServerDemo.Queries
 
         public int UserId { get; set; }
 
-        public IEnumerable<ITestableQuery> GetTestCases()
+        protected override IEnumerable<ITestableQuery> GetTestCasesInner()
         {
             yield return new MyWorkspaces() { UserId = 1 };
         }
-
-        public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);
     }
 }

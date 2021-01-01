@@ -1,12 +1,11 @@
-﻿using Dapper.QX;
+﻿using Dapper.QX.Abstract;
 using Dapper.QX.Interfaces;
 using Models;
 using System.Collections.Generic;
-using System.Data;
 
 namespace BlazorServerDemo.Queries
 {
-    public class MyActivities : Query<Activity>, ITestableQuery
+    public class MyActivities : TestableQuery<Activity>
     {
         public MyActivities() : base(
             @"SELECT 
@@ -25,11 +24,9 @@ namespace BlazorServerDemo.Queries
         public int WorkspaceId { get; set; }
         public bool IsActive { get; set; }
 
-        public IEnumerable<ITestableQuery> GetTestCases()
+        protected override IEnumerable<ITestableQuery> GetTestCasesInner()
         {
             yield return new MyActivities() { WorkspaceId = 1, IsActive = true };
         }
-
-        public IEnumerable<dynamic> TestExecute(IDbConnection connection) => TestExecuteHelper(connection);
     }
 }
